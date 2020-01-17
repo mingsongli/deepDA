@@ -5,7 +5,7 @@
 
 core:
   # DTDA exp name
-  nexp: exp_d18ogt1_test_20200117_wrong
+  nexp: exp_d18ogt1_test_20200117_wrong1
   # data dir
   data_dir: /mnt/c/Users/mul450/Dropbox/git/deepDA/mlwrk
   prior_dir: /mnt/d/cGENIE/ML.petm/ML.petm78.robert
@@ -136,7 +136,7 @@ psm:
     seawater_age: 56.0
 
 prior:
-  prior_source: genie_36x36
+  prior_source: cgenie_36x36
 
   state_variables:
     tas_sfc_Aequ: full
