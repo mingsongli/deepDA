@@ -1,0 +1,149 @@
+# Configuration parameters for running an DTDA reconstruction.  
+#
+# Mingsong Li, Penn State, Jan 15, 2020
+#
+
+core:
+  # DTDA exp name
+  nexp: exp_d18ogt1_test_20200117_wrong
+  # data dir
+  data_dir: /mnt/c/Users/mul450/Dropbox/git/petmda/code/DTDA/mlwrk
+  prior_dir: /mnt/d/cGENIE/ML.petm/ML.petm78.robert
+  datadir_output: /mnt/c/Users/mul450/Dropbox/git/petmda/code/DTDA/mlwrk/wrk
+  archive_dir: /mnt/c/Users/mul450/Dropbox/git/petmda/code/DTDA/mlwrk/archive
+
+  use_precalc_ye: True
+  write_posterior_Ye: True
+  recon_period: !!python/tuple [0, 2]
+  recon_timescale_interval: 1
+  nens: 150
+  seed: null
+  #loc_rad: null
+  loc_rad: 20000
+#  inflation_fact: 1.0
+
+  # Ensemble archiving options: ens_full, ens_variance, ens_percentiles, ens_subsample
+  #save_archive: ens_variance
+  save_archive: ens_variance
+  save_archive_percentiles: !!python/tuple [5, 95]
+  # Possible regridding reanalysis 2D fields
+  archive_regrid_method: null
+  archive_esmpy_interp_method: bilinear
+  archive_esmpy_regrid_to: t42
+
+proxies:
+  use_from: [NCDCdadt]
+  proxy_frac: 1.00
+  proxy_timeseries_kind: asis
+  proxy_availability_filter: False
+  proxy_availability_fraction: 1.0
+
+  NCDCdadt:
+    dbversion: 'petmproxy3slices_v0.0.10gt1test.csv'
+    datadir_proxy: /mnt/c/Users/mul450/Dropbox/git/petmda/code/DTDA/mlwrk/proxy
+    dataformat_proxy: 'DF'
+    regions: []
+    proxy_resolution: [!!python/tuple [0.,5000.]]
+    database_filter: []
+    data_period_id: [
+      'prePETMmean',
+      'PETMmean',
+      'postPETMmean'
+    ]
+    data_period_idstd: [
+      'prePETMstd',
+      'PETMstd',
+      'postPETMstd'
+    ]
+    proxy_blacklist: []
+    proxy_order: [
+      'Marine sediments_uk37',
+      'Marine sediments_tex86',
+      'Marine sediments_d18o_pooled',
+      'Marine sediments_mgca_pooled_bcp',
+      'Marine sediments_mgca_pooled_red'
+    ]
+    proxy_psm_type:
+      Marine sediments_uk37: bayesreg_uk37
+      Marine sediments_tex86: bayesreg_tex86
+      Marine sediments_d18o_pooled: bayesreg_d18o_pooled
+      Marine sediments_mgca_pooled_red: bayesreg_mgca_pooled_red
+      Marine sediments_mgca_pooled_bcp: bayesreg_mgca_pooled_bcp
+    proxy_assim2:
+      Marine sediments_uk37: ['uk37', 'UK37']
+      Marine sediments_tex86: ['tex86', 'TEX86']
+      Marine sediments_d18o_pooled: ['d18O_acarinina', 
+                                     'd18o_acarinina', 
+                                     'd18o_acarinina_l', 
+                                     'd18o_acarinina_s',
+                                     'd18o_a.praep',
+                                     'd18O_a_praep',
+                                     'd18o_a.soldadoensis', 
+                                     'd18o_A.soldadoensis',
+                                     'd18o_morozovella', 
+                                     'd18O_morozovella',
+                                     'd18o_m.subb', 
+                                     'd18o_M.subb',
+                                     'd18o_m.velascoensis']
+      Marine sediments_mgca_pooled_red: ['mgca_ruber:reductive',
+                                         'mgca_ruber_lato:reductive',
+                                         'mgca_ruber_stricto:reductive',
+                                         'mgca_sacculifer:reductive',
+                                         'mgca_bulloides:reductive',
+                                         'mgca_pachyderma:reductive',
+                                         'MgCa_Morozovella:reductive',
+                                         'MgCa_Acarinina:reductive']
+                                         #'mgca_morozovella:reductive',
+                                         #'mgca_acarinina:reductive']
+      Marine sediments_mgca_pooled_bcp: ['mgca_ruber:barker',
+                                         'mgca_ruber_lato:barker',
+                                         'mgca_ruber_stricto:barker',
+                                         'mgca_sacculifer:barker',
+                                         'mgca_bulloides:barker',
+                                         'mgca_pachyderma:barker',
+                                         'MgCa_M.subb:barker',
+                                         'MgCa_Acarinina:barker',
+                                         'MgCa_M.subb:barker',
+                                         'MgCa_M.subbotinae:barker',
+                                         'MgCa_M.velascoensis:barker',
+                                         'MgCa_Morozovella:barker']
+
+psm:
+  bayesreg_tex86:
+    psm_required_variables:
+      tos_sfc_Oequ: 'full'
+    temptype: 'sst'
+
+  bayesreg_uk37:
+    psm_required_variables:
+      tos_sfc_Odecmon: 'full'
+
+  bayesreg_d18o:
+    psm_seatemp_variable:
+      tos_sfc_Oequ: 'full'
+    psm_d18osw_variable:
+      sos_sfc_Oequ: 'full'
+    psm_d18osw_from_salinity: False
+    seasonal_seatemp: False
+
+  bayesreg_d18o_pooled:
+    psm_d18osw_adjust: -0.96
+
+  bayesreg_mgca:
+    psm_seatemp_variable:
+      tos_sfc_Odec: 'full'
+    seasonal_seatemp: False
+    seawater_age: 56.0
+
+prior:
+  prior_source: cgenie_36x36
+
+  state_variables:
+    tas_sfc_Aequ: full
+    tos_sfc_Oequ: full
+
+  state_variables_info:
+    temperature: [
+      'ocn_sur_temp',
+      'atm_temp'
+      ]
