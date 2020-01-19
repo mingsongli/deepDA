@@ -5,7 +5,7 @@
 
 core:
   # DTDA exp name
-  nexp: exp_d18ogt1_test_20200117_wrong1
+  nexp: exp_td18og_allglassyobs_varcov2_20200117
   # data dir
   data_dir: /mnt/c/Users/mul450/Dropbox/git/deepDA/mlwrk
   prior_dir: /mnt/d/cGENIE/ML.petm/ML.petm78.robert
@@ -39,7 +39,7 @@ proxies:
   proxy_availability_fraction: 1.0
 
   NCDCdadt:
-    dbversion: 'petmproxy3slices_v0.0.10gt1test.csv'
+    dbversion: 'petmproxy3slices_v0.0.10g.csv'
     datadir_proxy: /mnt/c/Users/mul450/Dropbox/git/deepDA/mlwrk/proxy
     dataformat_proxy: 'DF'
     regions: []
@@ -113,6 +113,8 @@ psm:
     psm_required_variables:
       tos_sfc_Oequ: 'full'
     temptype: 'sst'
+    search_tol: 15
+    nens: 5000
 
   bayesreg_uk37:
     psm_required_variables:
@@ -142,8 +144,10 @@ prior:
     tas_sfc_Aequ: full
     tos_sfc_Oequ: full
 
-  state_variables_info:
-    temperature: [
+  state_variables_info: [
       'ocn_sur_temp',
-      'atm_temp'
+      'atm_temp',
+      'atm_pCO2',
+      'ocn_sur_sal',
+      'ocn_ben_DIC_13C'
       ]
