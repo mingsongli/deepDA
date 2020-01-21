@@ -5,21 +5,26 @@
 
 core:
   # DTDA exp name
-  nexp: exp_d18ogt1_test_20200117_wrong1
-  # data dir
-  data_dir: /mnt/c/Users/mul450/Dropbox/git/deepDA/mlwrk
-  prior_dir: /mnt/d/cGENIE/ML.petm/ML.petm78.robert
-  datadir_output: /mnt/c/Users/mul450/Dropbox/git/deepDA/mlwrk/wrk
+  nexp: exp_petm45_allSSTobs_20200120_03
+  # project dir
+  proj_dir: /mnt/c/Users/mul450/Dropbox/git/deepDA/mlwrk
+  # work directory
+  wrkdir: /mnt/c/Users/mul450/Dropbox/git/deepDA/mlwrk/wrk
   archive_dir: /mnt/c/Users/mul450/Dropbox/git/deepDA/mlwrk/archive
+  proxy_dir: /mnt/c/Users/mul450/Dropbox/git/deepDA/mlwrk/proxy
+  # prior directory
+  #prior_dir: /mnt/d/cGENIE/ML.petm/ML.petm78.robert
+  prior_dir: /mnt/d/cGENIE/ML.petm/ML.petm45
 
+  geologic_age: 56.0
   use_precalc_ye: True
   write_posterior_Ye: True
   recon_period: !!python/tuple [0, 2]
   recon_timescale_interval: 1
   nens: 150
   seed: null
-  #loc_rad: null
-  loc_rad: 20000
+  loc_rad: null
+  #loc_rad: 20000
 #  inflation_fact: 1.0
 
   # Ensemble archiving options: ens_full, ens_variance, ens_percentiles, ens_subsample
@@ -39,8 +44,7 @@ proxies:
   proxy_availability_fraction: 1.0
 
   NCDCdadt:
-    dbversion: 'petmproxy3slices_v0.0.10gt1test.csv'
-    datadir_proxy: /mnt/c/Users/mul450/Dropbox/git/deepDA/mlwrk/proxy
+    dbversion: 'petmproxy3slices_v0.0.10g.csv'
     dataformat_proxy: 'DF'
     regions: []
     proxy_resolution: [!!python/tuple [0.,5000.]]
@@ -91,59 +95,69 @@ proxies:
                                          'mgca_sacculifer:reductive',
                                          'mgca_bulloides:reductive',
                                          'mgca_pachyderma:reductive',
-                                         'MgCa_Morozovella:reductive',
-                                         'MgCa_Acarinina:reductive']
-                                         #'mgca_morozovella:reductive',
-                                         #'mgca_acarinina:reductive']
+                                         'mgca_morozovella:reductive',
+                                         'mgca_acarinina:reductive']
       Marine sediments_mgca_pooled_bcp: ['mgca_ruber:barker',
                                          'mgca_ruber_lato:barker',
                                          'mgca_ruber_stricto:barker',
                                          'mgca_sacculifer:barker',
                                          'mgca_bulloides:barker',
                                          'mgca_pachyderma:barker',
-                                         'MgCa_M.subb:barker',
-                                         'MgCa_Acarinina:barker',
-                                         'MgCa_M.subb:barker',
-                                         'MgCa_M.subbotinae:barker',
-                                         'MgCa_M.velascoensis:barker',
-                                         'MgCa_Morozovella:barker']
+                                         'mgca_m.subb:barker',
+                                         'mgca_acarinina:barker',
+                                         'mgca_m.subbotinae:barker',
+                                         'mgca_m.velascoensis:barker',
+                                         'mgca_morozovella:barker']
 
 psm:
   bayesreg_tex86:
     psm_required_variables:
-      tos_sfc_Oequ: 'full'
+      ocn_sur_temp: 'full'
     temptype: 'sst'
-
-  bayesreg_uk37:
-    psm_required_variables:
-      tos_sfc_Odecmon: 'full'
+    search_tol: 15
+    nens: 5000
 
   bayesreg_d18o:
     psm_seatemp_variable:
-      tos_sfc_Oequ: 'full'
+      ocn_sur_temp: 'full'
     psm_d18osw_variable:
       sos_sfc_Oequ: 'full'
     psm_d18osw_from_salinity: False
     seasonal_seatemp: False
 
   bayesreg_d18o_pooled:
+    psm_seatemp_variable:
+      ocn_sur_temp: 'full'
     psm_d18osw_adjust: -0.96
 
   bayesreg_mgca:
     psm_seatemp_variable:
-      tos_sfc_Odec: 'full'
+      ocn_sur_temp: 'full'
     seasonal_seatemp: False
     seawater_age: 56.0
 
 prior:
   prior_source: cgenie_36x36
 
-  state_variables:
-    tas_sfc_Aequ: full
-    tos_sfc_Oequ: full
-
-  state_variables_info:
-    temperature: [
-      'ocn_sur_temp',
-      'atm_temp'
-      ]
+  cgenie_36x36:
+  
+    # longitude offset degree
+    dum_lon_offset: -180.0
+    # State variable to be analyzed
+    state_variable:
+      # DA 2d (lon-lat, surface/benthic) or 3d (lon-lat-depth)
+      2d:
+        ncname:
+          biogem: 'fields_biogem_2d'
+        fields_biogem_2d: ['ocn_sur_temp',
+          'atm_temp',
+          'ocn_ben_DIC_13C']
+      # DA 2d (lon-lat, surface/benthic) or 3d (lon-lat-depth)
+      3d:
+        ncname: 
+          biogem: 'fields_biogem_3d'
+        #fields_biogem_3d: ['ocn_temp']
+        fields_biogem_3d: ['ocn_temp',
+          'misc_pH'] 
+      
+    
