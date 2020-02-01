@@ -5,16 +5,18 @@
 
 core:
   # DTDA exp name
-  nexp: exp_petm45_allSSTobs_20200120_03
+  nexp: exp_petm78_og1_qc_obs_20200131_11
   # project dir
   proj_dir: /mnt/c/Users/mul450/Dropbox/git/deepDA/mlwrk
   # work directory
-  wrkdir: /mnt/c/Users/mul450/Dropbox/git/deepDA/mlwrk/wrk
-  archive_dir: /mnt/c/Users/mul450/Dropbox/git/deepDA/mlwrk/archive
+  #wrkdir: /mnt/c/Users/mul450/Dropbox/git/deepDA/mlwrk/wrk
+  wrkdir: /mnt/d/DeepDA/wrk
+  #archive_dir: /mnt/c/Users/mul450/Dropbox/git/deepDA/mlwrk/archive
+  archive_dir: /mnt/d/DeepDA/archive
   proxy_dir: /mnt/c/Users/mul450/Dropbox/git/deepDA/mlwrk/proxy
   # prior directory
-  #prior_dir: /mnt/d/cGENIE/ML.petm/ML.petm78.robert
-  prior_dir: /mnt/d/cGENIE/ML.petm/ML.petm45
+  prior_dir: /mnt/d/cGENIE/ML.petm/ML.petm78
+  #prior_dir: /mnt/d/cGENIE/ML.petm/ML.petm45
 
   geologic_age: 56.0
   use_precalc_ye: True
@@ -22,19 +24,19 @@ core:
   recon_period: !!python/tuple [0, 2]
   recon_timescale_interval: 1
   nens: 150
-  seed: null
-  loc_rad: null
-  #loc_rad: 20000
+  #seed: null
+  #local_rad: null
+  local_rad: 10000
 #  inflation_fact: 1.0
 
   # Ensemble archiving options: ens_full, ens_variance, ens_percentiles, ens_subsample
   #save_archive: ens_variance
-  save_archive: ens_variance
-  save_archive_percentiles: !!python/tuple [5, 95]
+  #save_archive: ens_variance
+  #save_archive_percentiles: !!python/tuple [5, 95]
   # Possible regridding reanalysis 2D fields
-  archive_regrid_method: null
-  archive_esmpy_interp_method: bilinear
-  archive_esmpy_regrid_to: t42
+  #archive_regrid_method: null
+  #archive_esmpy_interp_method: bilinear
+  #archive_esmpy_regrid_to: t42
 
 proxies:
   use_from: [NCDCdadt]
@@ -42,12 +44,24 @@ proxies:
   proxy_timeseries_kind: asis
   proxy_availability_filter: False
   proxy_availability_fraction: 1.0
-
+  # no quality control: 
+  proxy_qc: null
+  # quality control: if innovation > 3*std of prior, ignore this observation
+  #proxy_qc: 2.0
+  
   NCDCdadt:
-    dbversion: 'petmproxy3slices_v0.0.10g.csv'
+    dbversion: 'petmproxy3slices_v0.0.10gt1.csv'
+    #dbversion: 'petmproxy3slices_v0.0.10.csv'
+    #dbversion: 'petmproxy3slices_v0.0.10g.csv'
     dataformat_proxy: 'DF'
     regions: []
     proxy_resolution: [!!python/tuple [0.,5000.]]
+    
+    # evaluation method: 
+    #    proxy_err_psm: error derived from PSM only;  
+    #    proxy_err_psm_mp: PSM error + multiple points variance included
+    proxy_err_eval: 'proxy_err_psm'
+    #proxy_err_eval: 'proxy_err_psm_mp'
     database_filter: []
     data_period_id: [
       'prePETMmean',
@@ -60,6 +74,16 @@ proxies:
       'postPETMstd'
     ]
     proxy_blacklist: []
+    #proxy_blacklist: [
+    #  'Marine sediments_mgca_pooled_bcp',
+    #  'Marine sediments_mgca_pooled_red']
+    #proxy_blacklist: ['Marine sediments_tex86',
+    #  'Marine sediments_mgca_pooled_bcp',
+    #  'Marine sediments_mgca_pooled_red']
+    #proxy_blacklist: [
+    #  'Marine sediments_d18o_pooled',
+    #  'Marine sediments_mgca_pooled_bcp',
+    #  'Marine sediments_mgca_pooled_red']
     proxy_order: [
       'Marine sediments_uk37',
       'Marine sediments_tex86',
@@ -149,15 +173,27 @@ prior:
       2d:
         ncname:
           biogem: 'fields_biogem_2d'
+        #fields_biogem_2d: ['ocn_sur_temp',
+        #  'atm_pCO2']
         fields_biogem_2d: ['ocn_sur_temp',
-          'atm_temp',
-          'ocn_ben_DIC_13C']
+          'atm_pCO2',
+          'atm_temp']
+        #fields_biogem_2d: ['ocn_sur_temp',
+        #  'atm_temp',
+        #  'atm_pCO2',
+        #  'ocn_ben_DIC_13C',
+        #  'ocn_sur_DIC_13C']
       # DA 2d (lon-lat, surface/benthic) or 3d (lon-lat-depth)
       3d:
         ncname: 
           biogem: 'fields_biogem_3d'
-        #fields_biogem_3d: ['ocn_temp']
-        fields_biogem_3d: ['ocn_temp',
-          'misc_pH'] 
+        #fields_biogem_3d: []
+        fields_biogem_3d: ['ocn_temp']
+        #fields_biogem_3d: ['ocn_temp',
+        #  'misc_pH',
+        #  'ocn_O2',
+        #  'ocn_DIC_13C',
+        #  'phys_u',
+        #  'phys_v'] 
       
     

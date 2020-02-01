@@ -176,11 +176,16 @@ def haversine(lon1, lat1, lon2, lat2):
     km = 6367.0 * c
     return km
 
-#========================================================================================== 
+
 def cov_local_i(locRad, lon1, lat1, lon2, lat2):
-    
-    #km = haversine(lon1, lat1, lon2, lat2)
-    # convert decimal degrees to radians 
+    '''
+    locRad: covariance localization distance, in km
+    lon1:
+    lat1:
+    lon2:
+    lat2:
+    '''
+    # convert decimal degrees to radians
     lon1, lat1, lon2, lat2 = list(map(np.radians, [lon1, lat1, lon2, lat2]))
     # haversine formula 
     dlon = lon2 - lon1 
@@ -205,90 +210,42 @@ def cov_local_i(locRad, lon1, lat1, lon2, lat2):
     # Impose zero for pts outside of localization radius
     if km >  2.*hlr:
         covLoc = 0.0
-        
     return covLoc
 
-#========================================================================================== 
-
-def cov_localizationML(locRad, Y, X, X_coords):
-    """
-
-    Originator: R. Tardif, 
-                Dept. Atmos. Sciences, Univ. of Washington
-    -----------------------------------------------------------------
-     Inputs:
-        locRad : Localization radius (distance in km beyond which cov are forced to zero)
-             Y : Proxy object, needed to get ob site lat/lon (to calculate distances w.r.t. grid pts
-             X : Prior object, needed to get state vector info. 
-      X_coords : Array containing geographic location information of state vector elements
-
-     Output:
-        covLoc : Localization vector (weights) applied to ensemble covariance estimates.
-                 Dims = (Nx x 1), with Nx the dimension of the state vector.
-
-     Note: Uses the Gaspari-Cohn localization function.
-
-    """
-
-    # declare the localization array, filled with ones to start with (as in no localization)
-    stateVectDim, nbdimcoord = X_coords.shape
-    covLoc = np.ones(shape=[stateVectDim],dtype=np.float64)
-
-    # Mask to identify elements of state vector that are "localizeable"
-    # i.e. fields with (lat,lon)
-    localizeable = covLoc == 1. # Initialize as True
+def covloc_eval(locRad, yo_loc,dum_jmax,dum_imax,cGENIEGrid):
+    dum_ijmax = dum_jmax * dum_imax
+    lon1 = yo_loc[0] #  longitude
+    lat1 = yo_loc[1] # latitude
+    LAT, LON = np.meshgrid(cGENIEGrid[:,0], cGENIEGrid[:,1])
+    #LON, LAT = np.meshgrid(cGENIEGrid['lon'], cGENIEGrid['lat'])
     
-    for var in X.trunc_state_info.keys():
-        [var_state_pos_begin,var_state_pos_end] =  X.trunc_state_info[var]['pos']
-        # if variable is not a field with lats & lons, tag localizeable as False
-        if X.trunc_state_info[var]['spacecoords'] != ('lat', 'lon'):
-            localizeable[var_state_pos_begin:var_state_pos_end+1] = False
+    LON = LON.T.reshape(dum_ijmax,1)
+    LAT = LAT.T.reshape(dum_ijmax,1)
+    covloc = np.full((dum_ijmax,1),np.nan)
     
-    # array of distances between state vector elements & proxy site
-    # initialized as zeros: this is important!
-    dists = np.zeros(shape=[stateVectDim])
+    for ii in range(dum_ijmax):
+        #if ii % 500 == 0:
+        #    print('  covariance localization estimation: {} of {}'.format(ii, dum_ijmax))
+        lon2 = LON[ii]
+        lat2 = LAT[ii]
+        covloc[ii] = cov_local_i(locRad, lon1, lat1, lon2, lat2) # lon-lat
+        if ii < 50:
+            print('      lon2 {}, lat2 {}, covloc {}'.format(lon2,lat2,covloc[ii]))
+    return covloc
 
-    # geographic location of proxy site
-    site_lat = Y.lat
-    site_lon = Y.lon
-    # geographic locations of elements of state vector
-    X_lon = X_coords[:,1]
-    X_lat = X_coords[:,0]
 
-    # calculate distances for elements tagged as "localizeable". 
-    dists[localizeable] = np.array(haversine(site_lon, site_lat,
-                                             X_lon[localizeable],
-                                             X_lat[localizeable]),dtype=np.float64)
-
-    # those not "localizeable" are assigned with a disdtance of "nan"
-    # so these elements will not be included in the indexing
-    # according to distances (see below)
-    dists[~localizeable] = np.nan
-    
-    # Some transformation to variables used in calculating localization weights
-    hlr = 0.5*locRad; # work with half the localization radius
-    r = dists/hlr;
-    
-    # indexing w.r.t. distances
-    ind_inner = np.where(dists <= hlr)    # closest
-    ind_outer = np.where(dists >  hlr)    # close
-    ind_out   = np.where(dists >  2.*hlr) # out
-
-    # Gaspari-Cohn function
-    # for pts within 1/2 of localization radius
-    covLoc[ind_inner] = (((-0.25*r[ind_inner]+0.5)*r[ind_inner]+0.625)* \
-                         r[ind_inner]-(5.0/3.0))*(r[ind_inner]**2)+1.0
-    # for pts between 1/2 and one localization radius
-    covLoc[ind_outer] = ((((r[ind_outer]/12. - 0.5) * r[ind_outer] + 0.625) * \
-                          r[ind_outer] + 5.0/3.0) * r[ind_outer] - 5.0) * \
-                          r[ind_outer] + 4.0 - 2.0/(3.0*r[ind_outer])
-    # Impose zero for pts outside of localization radius
-    covLoc[ind_out] = 0.0
-
-    # prevent negative values: calc. above may produce tiny negative
-    # values for distances very near the localization radius
-    # TODO: revisit calculations to minimize round-off errors
-    covLoc[covLoc < 0.0] = 0.0
-
-    
-    return covLoc
+#def covloc_eval(locRad, yo_loc,dum_jmax,dum_imax,cGENIEGridB_lon36):
+#    covloc = np.full((dum_jmax,dum_imax),np.nan)
+#    lat1 = cGENIEGridB_lat36[yo_loc[0]] # latitude
+#    lon1 = cGENIEGridB_lon36[yo_loc[1]] # longitude
+#    for latii in range(dum_jmax):
+#        for lonii in range(dum_imax):
+#            lon2 = cGENIEGridB_lon36[lonii]
+#            if locRad:
+#                lat2 = cGENIEGridB_lat36[latii]
+#                covloc[latii,lonii] = cov_local_i(locRad, lon1, lat1, lon2, lat2)
+#                if covloc[latii,lonii] is None:
+#                    covloc[latii,lonii] = 0
+#            else:
+#                covloc[latii,lonii] = 1 # no localization
+#    return covloc

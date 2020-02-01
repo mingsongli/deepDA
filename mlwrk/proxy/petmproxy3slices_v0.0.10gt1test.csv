@@ -1,2 +1,0 @@
-File,Type,Proxy,Lat,Lon,prePETMmean,prePETMstd,prePETMn,PETMmean,PETMstd,PETMn,postPETMmean,postPETMstd,postPETMn,dProxy,dProxystd,d18osw_local,Site,Glassy,mg_bcp_red,prePETMmeanRaw,PETMmeanRaw,postPETMmeanRaw
-kozdon2013-865d18omorozovellasims.txt,d18O,d18o_morozovella,4.85,-163.85,-3.1044,0.537262961,5,-3.9734,0.537262961,6,-3.2864,0.537262961,4,-0.869,0.293751596,-0.1536,865,glassy,,-3.258,-4.127,-3.44
