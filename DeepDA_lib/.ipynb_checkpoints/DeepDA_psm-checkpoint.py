@@ -91,19 +91,40 @@ def obs_estimate_r_uk37(obs):
     y = bayspline.predict_uk(sst=obs)
     return np.max(np.var(y.ensemble, axis=1))
 
+def obs_estimate_r_fixed_uk37(obs):
+    # return R for the observation using PSMs
+    y = bayspline.predict_uk(sst=np.array([31.0]))
+    return np.max(np.var(y.ensemble, axis=1))
+
 def obs_estimate_r_tex86(obs, temptype, search_tol):
     # return R for the observation using PSMs
     y = bayspar.predict_tex_analog(seatemp=obs, temptype = temptype, search_tol = search_tol)
+    return np.max(np.var(y.ensemble, axis=1))
+
+def obs_estimate_r_fixed_tex86(obs):
+    # return R for the observation using PSMs
+    y = bayspar.predict_tex_analog(seatemp=np.array([1.0,15.0,31.0]), temptype = 'sst', search_tol = 15.0)
     return np.max(np.var(y.ensemble, axis=1))
     
 def obs_estimate_r_d18o(obs, d18o_localsw):
     # return R for the observation using PSMs
     y = bayfox.predict_d18oc(obs,d18o_localsw) # pool model for bayfox
     return np.max(np.var(y.ensemble, axis=1))
+
+def obs_estimate_r_fixed_d18o(obs):
+    # return R for the observation using PSMs
+    y = bayfox.predict_d18oc(np.array([15.0]),np.array([0.0])) # pool model for bayfox
+    return np.max(np.var(y.ensemble, axis=1))
     
 def obs_estimate_r_mgca_pooled(obs, cleaning, salinity, ph, omega, spp, age):
     # return R for the observation using PSMs
     prediction_mgca = baymag.predict_mgca(obs, cleaning, salinity, ph, omega, spp) # pool model for baymag reductive
+    y = baymag.sw_correction(prediction_mgca, np.array([age]))
+    return np.max(np.var(y.ensemble, axis=1))
+
+def obs_estimate_r_fixed_mgca_pooled(obs, cleaning, salinity, ph, omega, spp, age):
+    # return R for the observation using PSMs
+    prediction_mgca = baymag.predict_mgca(np.array([1.0,15.0,16.0,31.0]), cleaning, salinity, ph, omega, spp) # pool model for baymag reductive
     y = baymag.sw_correction(prediction_mgca, np.array([age]))
     return np.max(np.var(y.ensemble, axis=1))
     
@@ -120,7 +141,7 @@ def obs_qc(Ye, obs, obs_err, proxy_qc):
         obs_qc = np.sqrt( obs_err ) * proxy_qc
         ye_qc = np.std(Ye) * proxy_qc
         
-        print('obs_qc {}, ye_qc {}'.format(obs_qc, ye_qc))
+        #print('    obs_qc {}, ye_qc {}'.format(obs_qc, ye_qc))
         
         if obs_qc > ye_qc:
             max_qc = obs_qc
