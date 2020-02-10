@@ -66,11 +66,11 @@ def enkf_update_array(Xb, obvalue, Ye, ob_err, loc=None):
     # Option to localize the gain
     if loc is not None:
         kcov = np.multiply(kcov,loc) 
-        print('kcov shape {}'.format(kcov.shape))
+        #print('kcov shape {}'.format(kcov.shape))
    
     # Kalman gain
     kmat = np.divide(kcov, kdenom)
-    print('kmat shape {}'.format(kmat.shape))
+    #print('kmat shape {}'.format(kmat.shape))
 
     # update ensemble mean
     xam = xbm + np.multiply(kmat,innov)
@@ -80,7 +80,7 @@ def enkf_update_array(Xb, obvalue, Ye, ob_err, loc=None):
     kmat = np.multiply(beta,kmat)
     ye   = np.array(ye)[np.newaxis]
     kmat = np.array(kmat)[np.newaxis]
-    print('  EnKF shape of Xbp {}, kmat {}, ye {}'.format(Xbp.shape, kmat.shape, ye.shape))
+    #print('  EnKF shape of Xbp {}, kmat {}, ye {}'.format(Xbp.shape, kmat.shape, ye.shape))
     Xap  = Xbp - np.dot(kmat.T, ye)
 
     # full state

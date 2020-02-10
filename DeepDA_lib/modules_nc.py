@@ -70,7 +70,7 @@ def cal_find_ij(dum_lon,dum_lat,dum_lon_offset,dum_imax,dum_jmax):
 # CALCULATE 'j'
 # check lat
     if (dum_lat > 90) or (dum_lat < -90):
-        disp(['lat out-of-range ...'])
+        disp(['warning. lat out-of-range ...'])
 
 # calculate 'j'
     loc_sinlat = sin(pi*dum_lat/180.0)
@@ -229,23 +229,6 @@ def covloc_eval(locRad, yo_loc,dum_jmax,dum_imax,cGENIEGrid):
         lon2 = LON[ii]
         lat2 = LAT[ii]
         covloc[ii] = cov_local_i(locRad, lon1, lat1, lon2, lat2) # lon-lat
-        if ii < 50:
-            print('      lon2 {}, lat2 {}, covloc {}'.format(lon2,lat2,covloc[ii]))
+        #if ii < 50:
+        #    print('      lon2 {}, lat2 {}, covloc {}'.format(lon2,lat2,covloc[ii]))
     return covloc
-
-
-#def covloc_eval(locRad, yo_loc,dum_jmax,dum_imax,cGENIEGridB_lon36):
-#    covloc = np.full((dum_jmax,dum_imax),np.nan)
-#    lat1 = cGENIEGridB_lat36[yo_loc[0]] # latitude
-#    lon1 = cGENIEGridB_lon36[yo_loc[1]] # longitude
-#    for latii in range(dum_jmax):
-#        for lonii in range(dum_imax):
-#            lon2 = cGENIEGridB_lon36[lonii]
-#            if locRad:
-#                lat2 = cGENIEGridB_lat36[latii]
-#                covloc[latii,lonii] = cov_local_i(locRad, lon1, lat1, lon2, lat2)
-#                if covloc[latii,lonii] is None:
-#                    covloc[latii,lonii] = 0
-#            else:
-#                covloc[latii,lonii] = 1 # no localization
-#    return covloc
