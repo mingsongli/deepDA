@@ -1,34 +1,47 @@
 # Configuration parameters for running an DTDA reconstruction.  
 #
 # Mingsong Li, Penn State, Jan 15, 2020
+# updated Feb. 2, 2020
 #
 
 core:
   # DTDA exp name
-  nexp: exp_petm78_og1_qc_obs_20200131_11
-  # project dir
+  nexp: exp_petm78_ogt2_20200210_test0
+  # project directory for input data
   proj_dir: /mnt/c/Users/mul450/Dropbox/git/deepDA/mlwrk
-  # work directory
+  # work directory for outputs
   #wrkdir: /mnt/c/Users/mul450/Dropbox/git/deepDA/mlwrk/wrk
   wrkdir: /mnt/d/DeepDA/wrk
   #archive_dir: /mnt/c/Users/mul450/Dropbox/git/deepDA/mlwrk/archive
   archive_dir: /mnt/d/DeepDA/archive
+  # directory for proxy data
   proxy_dir: /mnt/c/Users/mul450/Dropbox/git/deepDA/mlwrk/proxy
-  # prior directory
+  # prior directory for ensemble members
   prior_dir: /mnt/d/cGENIE/ML.petm/ML.petm78
   #prior_dir: /mnt/d/cGENIE/ML.petm/ML.petm45
 
+  # geologic age for Mg/Ca calibration in the baymag PSM
   geologic_age: 56.0
+  # ... feature not included ...
   use_precalc_ye: True
+  # ... feature not included ...
   write_posterior_Ye: True
+  # reconstruction period
   recon_period: !!python/tuple [0, 2]
+  # reconstruction time scale step
   recon_timescale_interval: 1
+  # number of ensember
   nens: 150
+  # ... feature not included ...
   #seed: null
-  #local_rad: null
-  local_rad: 10000
+  # covariance localization radians
+  local_rad: null
+  #local_rad: 20000
+  # ... feature not included ...
 #  inflation_fact: 1.0
 
+  # Ensemble saving option, save full ensemble: True or False
+  save_ens_full: True
   # Ensemble archiving options: ens_full, ens_variance, ens_percentiles, ens_subsample
   #save_archive: ens_variance
   #save_archive: ens_variance
@@ -40,28 +53,38 @@ core:
 
 proxies:
   use_from: [NCDCdadt]
+  # ... feature not included ...
   proxy_frac: 1.00
+  # ... feature not included ...
   proxy_timeseries_kind: asis
+  # ... feature not included ...
   proxy_availability_filter: False
+  # ... feature not included ...
   proxy_availability_fraction: 1.0
-  # no quality control: 
+  # no quality control:
   proxy_qc: null
   # quality control: if innovation > 3*std of prior, ignore this observation
-  #proxy_qc: 2.0
+  #proxy_qc: 3.0
   
   NCDCdadt:
-    dbversion: 'petmproxy3slices_v0.0.10gt1.csv'
+    #dbversion: 'petmproxy3slices_v0.0.10gt1.csv'
     #dbversion: 'petmproxy3slices_v0.0.10.csv'
-    #dbversion: 'petmproxy3slices_v0.0.10g.csv'
+    dbversion: 'petmproxy3slices_v0.0.10gt2.csv'
+    #dbversion: 'petmproxy3slices_v0.0.11tex.csv'
+    # ... feature not included ...
     dataformat_proxy: 'DF'
+    # ... feature not included ...
     regions: []
+    # ... feature not included ...
     proxy_resolution: [!!python/tuple [0.,5000.]]
     
     # evaluation method: 
-    #    proxy_err_psm: error derived from PSM only;  
+    #    proxy_err_psm: error derived from PSM only using real observation value
+    #    proxy_err_psm_fixed: error derived from PSM only using default observation value
     #    proxy_err_psm_mp: PSM error + multiple points variance included
-    proxy_err_eval: 'proxy_err_psm'
+    proxy_err_eval: 'proxy_err_psm_fixed'
     #proxy_err_eval: 'proxy_err_psm_mp'
+    # ... feature not included ...
     database_filter: []
     data_period_id: [
       'prePETMmean',
@@ -74,6 +97,8 @@ proxies:
       'postPETMstd'
     ]
     proxy_blacklist: []
+    #proxy_blacklist: ['Marine sediments_d18o_pooled']
+    #proxy_blacklist: ['Marine sediments_tex86']
     #proxy_blacklist: [
     #  'Marine sediments_mgca_pooled_bcp',
     #  'Marine sediments_mgca_pooled_red']
@@ -175,9 +200,12 @@ prior:
           biogem: 'fields_biogem_2d'
         #fields_biogem_2d: ['ocn_sur_temp',
         #  'atm_pCO2']
-        fields_biogem_2d: ['ocn_sur_temp',
-          'atm_pCO2',
-          'atm_temp']
+        
+        # Warning: all proxy data associated with ocn_sur_temp, which must be the first field        
+        fields_biogem_2d: ['ocn_sur_temp']
+        #fields_biogem_2d: ['ocn_sur_temp',
+        #  'atm_pCO2',
+        #  'atm_temp']
         #fields_biogem_2d: ['ocn_sur_temp',
         #  'atm_temp',
         #  'atm_pCO2',
@@ -187,8 +215,9 @@ prior:
       3d:
         ncname: 
           biogem: 'fields_biogem_3d'
-        #fields_biogem_3d: []
-        fields_biogem_3d: ['ocn_temp']
+        fields_biogem_3d: []
+        #fields_biogem_3d: ['ocn_temp',
+        #   'misc_pH']
         #fields_biogem_3d: ['ocn_temp',
         #  'misc_pH',
         #  'ocn_O2',
