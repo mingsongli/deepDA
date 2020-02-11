@@ -6,7 +6,7 @@
 
 core:
   # DTDA exp name
-  nexp: exp_petm78_ogt2_20200210_test0
+  nexp: exp_petm78_og_20200210_test0
   # project directory for input data
   proj_dir: /mnt/c/Users/mul450/Dropbox/git/deepDA/mlwrk
   # work directory for outputs
@@ -68,8 +68,8 @@ proxies:
   
   NCDCdadt:
     #dbversion: 'petmproxy3slices_v0.0.10gt1.csv'
-    #dbversion: 'petmproxy3slices_v0.0.10.csv'
-    dbversion: 'petmproxy3slices_v0.0.10gt2.csv'
+    dbversion: 'petmproxy3slices_v0.0.10g.csv'
+    #dbversion: 'petmproxy3slices_v0.0.10gt2.csv'
     #dbversion: 'petmproxy3slices_v0.0.11tex.csv'
     # ... feature not included ...
     dataformat_proxy: 'DF'
@@ -96,15 +96,16 @@ proxies:
       'PETMstd',
       'postPETMstd'
     ]
-    proxy_blacklist: []
+    #proxy_blacklist: []
     #proxy_blacklist: ['Marine sediments_d18o_pooled']
+    #proxy_blacklist: ['Marine sediments_d18o_pooled','Marine sediments_tex86']
     #proxy_blacklist: ['Marine sediments_tex86']
     #proxy_blacklist: [
     #  'Marine sediments_mgca_pooled_bcp',
     #  'Marine sediments_mgca_pooled_red']
-    #proxy_blacklist: ['Marine sediments_tex86',
-    #  'Marine sediments_mgca_pooled_bcp',
-    #  'Marine sediments_mgca_pooled_red']
+    proxy_blacklist: ['Marine sediments_tex86',
+      'Marine sediments_mgca_pooled_bcp',
+      'Marine sediments_mgca_pooled_red']
     #proxy_blacklist: [
     #  'Marine sediments_d18o_pooled',
     #  'Marine sediments_mgca_pooled_bcp',
