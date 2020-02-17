@@ -3,10 +3,12 @@
 # Mingsong Li, Penn State, Jan 15, 2020
 # updated Feb. 2, 2020
 #
+# TODO
+#  add function of proxy_frac, following the funciton create_proxy_lists_from_metadata_S1csv in load_proxy_data.py in LMR
 
 core:
   # DTDA exp name
-  nexp: exp_petm78_og_20200210_test0
+  nexp: exp_petm9_10g_all_20200211_test0
   # project directory for input data
   proj_dir: /mnt/c/Users/mul450/Dropbox/git/deepDA/mlwrk
   # work directory for outputs
@@ -17,7 +19,8 @@ core:
   # directory for proxy data
   proxy_dir: /mnt/c/Users/mul450/Dropbox/git/deepDA/mlwrk/proxy
   # prior directory for ensemble members
-  prior_dir: /mnt/d/cGENIE/ML.petm/ML.petm78
+  prior_dir: /mnt/d/cGENIE/ML.petm/ML.petm009
+  #prior_dir: /mnt/d/cGENIE/ML.petm/ML.petm78
   #prior_dir: /mnt/d/cGENIE/ML.petm/ML.petm45
 
   # geologic age for Mg/Ca calibration in the baymag PSM
@@ -31,7 +34,7 @@ core:
   # reconstruction time scale step
   recon_timescale_interval: 1
   # number of ensember
-  nens: 150
+  nens: 200
   # ... feature not included ...
   #seed: null
   # covariance localization radians
@@ -53,8 +56,9 @@ core:
 
 proxies:
   use_from: [NCDCdadt]
-  # ... feature not included ...
+  # ... feature to be tested ...
   proxy_frac: 1.00
+  proxy_frac: 0.75
   # ... feature not included ...
   proxy_timeseries_kind: asis
   # ... feature not included ...
@@ -96,16 +100,16 @@ proxies:
       'PETMstd',
       'postPETMstd'
     ]
-    #proxy_blacklist: []
+    proxy_blacklist: []
     #proxy_blacklist: ['Marine sediments_d18o_pooled']
     #proxy_blacklist: ['Marine sediments_d18o_pooled','Marine sediments_tex86']
     #proxy_blacklist: ['Marine sediments_tex86']
     #proxy_blacklist: [
     #  'Marine sediments_mgca_pooled_bcp',
     #  'Marine sediments_mgca_pooled_red']
-    proxy_blacklist: ['Marine sediments_tex86',
-      'Marine sediments_mgca_pooled_bcp',
-      'Marine sediments_mgca_pooled_red']
+    #proxy_blacklist: ['Marine sediments_tex86',
+    #  'Marine sediments_mgca_pooled_bcp',
+    #  'Marine sediments_mgca_pooled_red']
     #proxy_blacklist: [
     #  'Marine sediments_d18o_pooled',
     #  'Marine sediments_mgca_pooled_bcp',
@@ -203,7 +207,12 @@ prior:
         #  'atm_pCO2']
         
         # Warning: all proxy data associated with ocn_sur_temp, which must be the first field        
-        fields_biogem_2d: ['ocn_sur_temp']
+        #fields_biogem_2d: ['ocn_sur_temp']
+        fields_biogem_2d: [
+            'ocn_sur_temp',
+            'sed_CaCO3',
+            'atm_pCO2'
+            ]
         #fields_biogem_2d: ['ocn_sur_temp',
         #  'atm_pCO2',
         #  'atm_temp']
