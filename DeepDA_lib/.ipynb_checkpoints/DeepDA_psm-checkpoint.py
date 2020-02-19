@@ -283,3 +283,19 @@ def cal_ye_cgenie_mgca(yml_dict,proxies,j,Xb,proxy_psm_type,dum_lon_offset,dum_i
         pred_mgca_adj = baymag.sw_correction(prediction_mgca, np.array([geologic_age]))
         Ye = np.mean(pred_mgca_adj.ensemble, axis = 1)
     return Ye
+
+def CE_NS70(data, model):
+    '''
+    Inputs:
+        data: observation
+        model: model, the same size as data
+    Outputs:
+    CE: CE statistic calculated following Nash & Sutcliffe (1970)
+    Borrowed from LMR_utils.py by Greg Hakim & Robert Tardif, 2015
+    '''
+    difference = model - data
+    numer = np.nansum( np.power(difference,2), axis = 0 )
+    denom = np.nansum( np.power(data - np.nanmean(data, axis=0),2), axis = 0 )
+    CE = 1. - np.divide(numer, denom)
+    
+    return CE
