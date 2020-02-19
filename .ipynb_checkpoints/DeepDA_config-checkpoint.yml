@@ -8,7 +8,7 @@
 
 core:
   # DTDA exp name
-  nexp: exp_petm9_10g_all_20200211_test0
+  nexp: exp_petm9_10g_all_20200218_test3
   # project directory for input data
   proj_dir: /mnt/c/Users/mul450/Dropbox/git/deepDA/mlwrk
   # work directory for outputs
@@ -58,7 +58,7 @@ proxies:
   use_from: [NCDCdadt]
   # ... feature to be tested ...
   proxy_frac: 1.00
-  proxy_frac: 0.75
+  proxy_frac: 0.5
   # ... feature not included ...
   proxy_timeseries_kind: asis
   # ... feature not included ...
@@ -104,9 +104,9 @@ proxies:
     #proxy_blacklist: ['Marine sediments_d18o_pooled']
     #proxy_blacklist: ['Marine sediments_d18o_pooled','Marine sediments_tex86']
     #proxy_blacklist: ['Marine sediments_tex86']
-    #proxy_blacklist: [
-    #  'Marine sediments_mgca_pooled_bcp',
-    #  'Marine sediments_mgca_pooled_red']
+    proxy_blacklist: [
+      'Marine sediments_mgca_pooled_bcp',
+      'Marine sediments_mgca_pooled_red']
     #proxy_blacklist: ['Marine sediments_tex86',
     #  'Marine sediments_mgca_pooled_bcp',
     #  'Marine sediments_mgca_pooled_red']
@@ -206,12 +206,22 @@ prior:
         #fields_biogem_2d: ['ocn_sur_temp',
         #  'atm_pCO2']
         
-        # Warning: all proxy data associated with ocn_sur_temp, which must be the first field        
+        # Warning: all proxy data associated with 
+        #    ocn_sur_temp, which must be the first field       
+        
         #fields_biogem_2d: ['ocn_sur_temp']
+        #fields_biogem_2d: [
+        #    'ocn_sur_temp',
+        #    'sed_CaCO3',
+        #    'atm_pCO2'
+        #    ]
         fields_biogem_2d: [
             'ocn_sur_temp',
             'sed_CaCO3',
-            'atm_pCO2'
+            'atm_pCO2',
+            'ocn_sur_sal',
+            'misc_pH',
+            'carb_sur_ohm_cal'
             ]
         #fields_biogem_2d: ['ocn_sur_temp',
         #  'atm_pCO2',
@@ -226,6 +236,7 @@ prior:
         ncname: 
           biogem: 'fields_biogem_3d'
         fields_biogem_3d: []
+        #fields_biogem_3d: ['carb_ohm_cal']
         #fields_biogem_3d: ['ocn_temp',
         #   'misc_pH']
         #fields_biogem_3d: ['ocn_temp',
