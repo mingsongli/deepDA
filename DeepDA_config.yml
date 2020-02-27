@@ -5,10 +5,12 @@
 #
 # TODO
 #  add function of proxy_frac, following the funciton create_proxy_lists_from_metadata_S1csv in load_proxy_data.py in LMR
+MonteCarlo:
+  number: 100
 
 core:
   # DTDA exp name
-  nexp: exp_petm9_caco3c13_20200221_test0
+  nexp: exp_petm9_allg_frac0.7_20200226
   # project directory for input data
   proj_dir: /mnt/c/Users/mul450/Dropbox/git/deepDA/mlwrk
   # work directory for outputs
@@ -57,7 +59,7 @@ core:
 proxies:
   use_from: [NCDCdadt]
   #proxy_frac: 1.00 = 100%, all proxy sites used; 0.50 = 50%, half proxy sites used
-  proxy_frac: 1.0
+  proxy_frac: 0.7
   # ... feature not included ...
   proxy_timeseries_kind: asis
   # ... feature not included ...
