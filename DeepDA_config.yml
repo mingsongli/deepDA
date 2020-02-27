@@ -8,14 +8,14 @@
 
 core:
   # DTDA exp name
-  nexp: exp_petm9_10g_all_20200218_test3
+  nexp: exp_petm9_caco3c13_20200221_test0
   # project directory for input data
   proj_dir: /mnt/c/Users/mul450/Dropbox/git/deepDA/mlwrk
   # work directory for outputs
   #wrkdir: /mnt/c/Users/mul450/Dropbox/git/deepDA/mlwrk/wrk
   wrkdir: /mnt/d/DeepDA/wrk
   #archive_dir: /mnt/c/Users/mul450/Dropbox/git/deepDA/mlwrk/archive
-  archive_dir: /mnt/d/DeepDA/archive
+  #archive_dir: /mnt/d/DeepDA/archive
   # directory for proxy data
   proxy_dir: /mnt/c/Users/mul450/Dropbox/git/deepDA/mlwrk/proxy
   # prior directory for ensemble members
@@ -26,9 +26,9 @@ core:
   # geologic age for Mg/Ca calibration in the baymag PSM
   geologic_age: 56.0
   # ... feature not included ...
-  use_precalc_ye: True
+  #use_precalc_ye: True
   # ... feature not included ...
-  write_posterior_Ye: True
+  #write_posterior_Ye: True
   # reconstruction period
   recon_period: !!python/tuple [0, 2]
   # reconstruction time scale step
@@ -56,9 +56,8 @@ core:
 
 proxies:
   use_from: [NCDCdadt]
-  # ... feature to be tested ...
-  proxy_frac: 1.00
-  proxy_frac: 0.5
+  #proxy_frac: 1.00 = 100%, all proxy sites used; 0.50 = 50%, half proxy sites used
+  proxy_frac: 1.0
   # ... feature not included ...
   proxy_timeseries_kind: asis
   # ... feature not included ...
@@ -70,9 +69,16 @@ proxies:
   # quality control: if innovation > 3*std of prior, ignore this observation
   #proxy_qc: 3.0
   
+  # glassy only
+  proxy_d18o_glassy: True
+  
   NCDCdadt:
     #dbversion: 'petmproxy3slices_v0.0.10gt1.csv'
-    dbversion: 'petmproxy3slices_v0.0.10g.csv'
+    dbversion: 'petmproxy3slices_v0.0.10.csv'
+    #dbversion: 'petmproxy3slices_v0.0.10g.csv'
+    #dbversion: 'petmproxy3slices_v0.0.10gMg.csv'
+    #dbversion: '20200114_PETM_site_CaCO3_cgenieIDtest.csv'
+    #dbversion: '20200220_PETM_site_CaCO3_13C_test.csv'
     #dbversion: 'petmproxy3slices_v0.0.10gt2.csv'
     #dbversion: 'petmproxy3slices_v0.0.11tex.csv'
     # ... feature not included ...
@@ -104,9 +110,9 @@ proxies:
     #proxy_blacklist: ['Marine sediments_d18o_pooled']
     #proxy_blacklist: ['Marine sediments_d18o_pooled','Marine sediments_tex86']
     #proxy_blacklist: ['Marine sediments_tex86']
-    proxy_blacklist: [
-      'Marine sediments_mgca_pooled_bcp',
-      'Marine sediments_mgca_pooled_red']
+    #proxy_blacklist: [
+    #  'Marine sediments_mgca_pooled_bcp',
+    #  'Marine sediments_mgca_pooled_red']
     #proxy_blacklist: ['Marine sediments_tex86',
     #  'Marine sediments_mgca_pooled_bcp',
     #  'Marine sediments_mgca_pooled_red']
@@ -119,7 +125,9 @@ proxies:
       'Marine sediments_tex86',
       'Marine sediments_d18o_pooled',
       'Marine sediments_mgca_pooled_bcp',
-      'Marine sediments_mgca_pooled_red'
+      'Marine sediments_mgca_pooled_red',
+      'Marine sediments_caco3',
+      'Marine sediments_caco3_13c'
     ]
     proxy_psm_type:
       Marine sediments_uk37: bayesreg_uk37
@@ -127,6 +135,8 @@ proxies:
       Marine sediments_d18o_pooled: bayesreg_d18o_pooled
       Marine sediments_mgca_pooled_red: bayesreg_mgca_pooled_red
       Marine sediments_mgca_pooled_bcp: bayesreg_mgca_pooled_bcp
+      Marine sediments_caco3: cgenie_caco3
+      Marine sediments_caco3_13c: cgenie_caco3_13c
     proxy_assim2:
       Marine sediments_uk37: ['uk37', 'UK37']
       Marine sediments_tex86: ['tex86', 'TEX86']
@@ -162,7 +172,12 @@ proxies:
                                          'mgca_m.subbotinae:barker',
                                          'mgca_m.velascoensis:barker',
                                          'mgca_morozovella:barker']
-
+      Marine sediments_caco3: ['caco3','CaCO3']
+      Marine sediments_caco3_13c: ['caco3_13c','CaCO3_13C']
+    # glassy foraminiferal label
+    proxy_assim3:
+      Marine sediments_d18o_pooled_glassy: ['unknown', 'frosty']
+      
 psm:
   bayesreg_tex86:
     psm_required_variables:
@@ -172,7 +187,7 @@ psm:
     nens: 5000
 
   bayesreg_d18o:
-    psm_seatemp_variable:
+    psm_required_variables:
       ocn_sur_temp: 'full'
     psm_d18osw_variable:
       sos_sfc_Oequ: 'full'
@@ -180,15 +195,37 @@ psm:
     seasonal_seatemp: False
 
   bayesreg_d18o_pooled:
-    psm_seatemp_variable:
+    psm_required_variables:
       ocn_sur_temp: 'full'
     psm_d18osw_adjust: -0.96
 
   bayesreg_mgca:
-    psm_seatemp_variable:
+    psm_required_variables:
       ocn_sur_temp: 'full'
     seasonal_seatemp: False
     seawater_age: 56.0
+    
+  bayesreg_mgca_pooled_bcp:
+    psm_required_variables:
+      ocn_sur_temp: 'full'
+    seasonal_seatemp: False
+    seawater_age: 56.0
+
+  bayesreg_mgca_pooled_red:
+    psm_required_variables:
+      ocn_sur_temp: 'full'
+    seasonal_seatemp: False
+    seawater_age: 56.0
+
+  cgenie_caco3:
+    psm_required_variables:
+      sed_CaCO3: 'full'
+    psm_error: 100.0
+      
+  cgenie_caco3_13c:
+    psm_required_variables:
+      sed_CaCO3_13C_corr: 'full'
+    psm_error: 0.05
 
 prior:
   prior_source: cgenie_36x36
@@ -202,7 +239,8 @@ prior:
       # DA 2d (lon-lat, surface/benthic) or 3d (lon-lat-depth)
       2d:
         ncname:
-          biogem: 'fields_biogem_2d'
+          #biogem: 'fields_biogem_2d'
+          biogem: 'fields_biogem_2d_13ccorr'
         #fields_biogem_2d: ['ocn_sur_temp',
         #  'atm_pCO2']
         
@@ -215,9 +253,18 @@ prior:
         #    'sed_CaCO3',
         #    'atm_pCO2'
         #    ]
-        fields_biogem_2d: [
+        #fields_biogem_2d: [
+        #    'ocn_sur_temp',
+        #    'sed_CaCO3',
+        #    'atm_pCO2',
+        #    'ocn_sur_sal',
+        #    'misc_pH',
+        #    'carb_sur_ohm_cal'
+        #    ]
+        fields_biogem_2d_13ccorr: [
             'ocn_sur_temp',
             'sed_CaCO3',
+            'sed_CaCO3_13C_corr',
             'atm_pCO2',
             'ocn_sur_sal',
             'misc_pH',
