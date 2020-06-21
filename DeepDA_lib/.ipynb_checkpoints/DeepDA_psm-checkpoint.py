@@ -268,9 +268,26 @@ def cal_ye_cgenie(yml_dict,proxies,j,Xb,proxy_assim2,proxy_psm_type,dum_lon_offs
     
     # Now PSM type has been found. Let's cal Ye
     if proxy_psm_type_i in ['bayesreg_d18o_pooled']:
-        x = abs(dum_lat)
-        d18o_localsw = 0.576 + 0.041 * x - 0.0017 * x ** 2 + 1.35e-5 * x ** 3
         psm_d18osw_adjust = yml_dict['psm']['bayesreg_d18o_pooled']['psm_d18osw_adjust']
+        d18osw_local_choice = yml_dict['psm']['bayesreg_d18o_pooled']['d18osw_local_choice']
+        d18osw_icesm_pco2 = yml_dict['psm']['bayesreg_d18o_pooled']['d18osw_icesm_pco2']
+        
+        if d18osw_local_choice in ['zachos94']:
+            # d18o_localsw using method by Zachos et al., 1994 PALEOCEANOGRAPHY
+            #d18o_localsw = DeepDA_psm.d18o_localsw(abs(dum_lat))
+            x = abs(dum_lat)
+            d18o_localsw = 0.576 + 0.041 * x - 0.0017 * x ** 2 + 1.35e-5 * x ** 3
+        else:
+            if d18osw_icesm_pco2 == 1.0:
+                proxy_col_d18osw = 'd18osw_1x'
+            elif d18osw_icesm_pco2 == 6.0:
+                proxy_col_d18osw = 'd18osw_6x'
+            elif d18osw_icesm_pco2 == 9.0:
+                proxy_col_d18osw = 'd18osw_9x'
+            else:
+                proxy_col_d18osw = 'd18osw_3x'
+            d18o_localsw = proxies[proxy_col_d18osw][j]
+        
         prediction_d18O = bayfox.predict_d18oc(prior_1grid,d18o_localsw + psm_d18osw_adjust) # pool model for bayfox
         Ye = np.mean(prediction_d18O.ensemble, axis = 1)
         
