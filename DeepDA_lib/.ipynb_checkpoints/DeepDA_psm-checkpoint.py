@@ -277,6 +277,7 @@ def cal_ye_cgenie(yml_dict,proxies,j,Xb,proxy_assim2,proxy_psm_type,dum_lon_offs
             #d18o_localsw = DeepDA_psm.d18o_localsw(abs(dum_lat))
             x = abs(dum_lat)
             d18o_localsw = 0.576 + 0.041 * x - 0.0017 * x ** 2 + 1.35e-5 * x ** 3
+            prediction_d18O = bayfox.predict_d18oc(prior_1grid,d18o_localsw + psm_d18osw_adjust) # pool model for bayfox
         else:
             if d18osw_icesm_pco2 == 1.0:
                 proxy_col_d18osw = 'd18osw_1x'
@@ -287,8 +288,8 @@ def cal_ye_cgenie(yml_dict,proxies,j,Xb,proxy_assim2,proxy_psm_type,dum_lon_offs
             else:
                 proxy_col_d18osw = 'd18osw_3x'
             d18o_localsw = proxies[proxy_col_d18osw][j]
+            prediction_d18O = bayfox.predict_d18oc(prior_1grid,d18o_localsw) # pool model for bayfox
         
-        prediction_d18O = bayfox.predict_d18oc(prior_1grid,d18o_localsw + psm_d18osw_adjust) # pool model for bayfox
         Ye = np.mean(prediction_d18O.ensemble, axis = 1)
         
     elif proxy_psm_type_i in ['bayesreg_tex86']:
