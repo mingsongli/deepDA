@@ -1,4 +1,42 @@
 """
+functions
+    
+    d18o_localsw
+    
+    d18o_linear
+    
+    d18oc_linear
+    
+    tex86_linear
+    
+    mgca_anand03
+    
+    obs_estimate_r_uk37
+    
+    obs_estimate_r_fixed_uk37    
+    
+    obs_estimate_r_tex86
+    
+    obs_estimate_r_fixed_tex86
+    
+    obs_estimate_r_d18o
+    
+    obs_estimate_r_fixed_d18o
+    
+    obs_estimate_r_mgca_pooled
+    
+    obs_estimate_r_fixed_mgca_pooled    
+    
+    obs_qc
+    
+    proxy_frac_4da_eval
+    
+    cal_ye_cgenie
+    
+    cal_ye_cgenie_mgca
+    
+    CE_NS70
+
 """
 import numpy as np
 from DeepDA_lib import modules_nc

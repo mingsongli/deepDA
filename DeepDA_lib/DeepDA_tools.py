@@ -1,7 +1,15 @@
-#==========================================================================================
-# Data assimilation for deep time tools. 
-#
-#==========================================================================================
+'''
+DeepDA tools
+
+functions:
+
+    deepda_hard_limit
+    
+    rank_histogram
+    
+    
+    
+'''
 
 import numpy as np
 
@@ -63,4 +71,38 @@ def deepda_hard_limit(Xa, yml_dict, prior_variable_dict, dum_ijmax,verbose):
                 #Xa = np.ma.MaskedArray(Xa, Xa >= 9.9692e+36)
     # Return the full state
     return Xa
+
+def rank_histogram(ensemble, value):
+
+    """
+    Compute the rank of a measurement in the contex of an ensemble. 
+    
+    Input:
+    * the observation (value)
+    * the ensemble evaluated at the observation position (ensemble)
+
+    Output:
+    * the rank of the observation in the ensemble (rank)
+    
+    Originators: Greg Hakim & Robert Tardif | U. of Washington
+                                        | March 2015
+                                        
+    """
+    # Originator: Greg Hakim
+    #             University of Washington
+    #             July 2015
+
+    # convert the numpy array to a list so that the "truth" can be appended
+    Lensemble = ensemble.tolist()
+    Lensemble.append(value)
+
+    # convert the list back to a numpy array so we have access to a sorting function
+    Nensemble = np.array(Lensemble)
+    sort_index = np.argsort(Nensemble)
+
+    # convert the numpy array containing the ranked list indices back to an ordinary list for indexing
+    Lsort_index = sort_index.tolist()
+    rank = Lsort_index.index(len(Lensemble)-1)
+
+    return rank
 

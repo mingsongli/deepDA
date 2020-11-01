@@ -1,11 +1,18 @@
-#==========================================================================================
+'''
 # Data assimilation function. 
 #
 # Define the data assimilation function
 # This version uses passed arrays, and updates the ensemble for a single time
 # (& single ob).
-#
-#==========================================================================================
+
+Functions:
+
+    enkf_update_array
+    
+    cov_localization
+
+'''
+
 
 import numpy as np
 #import LMR_utils

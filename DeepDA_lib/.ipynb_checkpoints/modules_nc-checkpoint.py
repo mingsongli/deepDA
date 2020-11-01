@@ -1,5 +1,5 @@
 '''
-    Modules:
+    Modules for prior
     
     cal_find_ij
         : find loc_i, and loc_j, return dum_ij
@@ -21,6 +21,12 @@
 
     is_number
         : return True or False
+        
+    haversine
+    
+    cov_local_i
+    
+    covloc_eval
 
 EXAMPLE:
 
