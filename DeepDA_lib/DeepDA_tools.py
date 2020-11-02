@@ -57,14 +57,14 @@ def deepda_hard_limit(Xa, yml_dict, prior_variable_dict, dum_ijmax,verbose):
                     #Xa_full_vari[np.logical_and(Xa_full_vari<lim_min,Xa_full_vari<9.9692e+36)] = lim_min
                     if np.any(Xa_full_vari < lim_min):
                         Xa_full_vari[Xa_full_vari<lim_min] = lim_min
-                        if verbose:
+                        if verbose>2:
                             print(' set variable {} : id {} - {} min limit to {}'.format(prior_variable_dict[Xa2d_vari],j0,j1,lim_min))
                 if lim_max is not None:
                     if np.any(np.logical_and(Xa_full_vari>lim_max,Xa_full_vari<9.9692e+36)):
                         Xa_full_vari[np.logical_and(Xa_full_vari>lim_max,Xa_full_vari<9.9692e+36)] = lim_max
                         #if np.any(Xa_full_vari>lim_max):
                         #    Xa_full_vari[Xa_full_vari>lim_max] = lim_max
-                        if verbose:
+                        if verbose>2:
                             print(' set variable {} : id {} - {} max limit to {}'.format(prior_variable_dict[Xa2d_vari],j0,j1,lim_max))
                 # save back
                 Xa[j0:j1,:] = Xa_full_vari

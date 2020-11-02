@@ -8,16 +8,21 @@
 #  Updated Oct. 31, 2020; Support MacOS
 #     /Applications/MATLAB/MATLAB_Runtime/v96/sys/os/maci64/libgfortran.3.dylib.dylib  was renamed as:
 #     libgfortran.3.dylib.acycle.dylib; otherwise, scipy.stats won't work
+#  Updated Nov. 3, 2020; log_level
 
 # STEPS
 #  1. Revise the following settings
-#  2. If prior lacking field, try correc_xxx.ipynb within the 'misc' folder
+#  2. If prior lacking field, try correc_xxx.ipynb within the 'utils' folder
 #  3. Run DeepDA_allMC.ipynb
-#  
+# 
+
+
+# Control logging output. (0 = none; 1 = most important; 2 = many; 3 = a lot; >=4 all)
+log_level: 3
 
 MonteCarlo:
-  # number = 1: no monte carlo; integer > 1: monte carlo simulations
-  number: 5
+  # number: integer 1 = single run;  >1 = monte carlo simulations
+  number: 2
   multi_seed: [
       0,   1,   2,   3,   4,   5,   6,   7,   8,   9,  10,  11,  12,
      13,  14,  15,  16,  17,  18,  19,  20,  21,  22,  23,  24,  25,
@@ -32,6 +37,7 @@ MonteCarlo:
 core:
   # DTDA exp name
   nexp: _petm18_v18h2_2021030_MgDeepMIP_MC5seed_testMac
+  nexp: _petm18_v18h2_2021030_Mg_MC5seed_testMac
   #nexp: _petm15_v14_20200617all_glassy_pre_noCaCO3_oswcesm
   
   # project directory for input data
@@ -264,10 +270,10 @@ proxies:
       Marine sediments_tex86: tex86h_forward
       #Marine sediments_d18o_pooled: bayesreg_d18o_pooled
       Marine sediments_d18o_pooled: deepmip_d18o
-      #Marine sediments_mgca_pooled_red: bayesreg_mgca_pooled_red
-      #Marine sediments_mgca_pooled_bcp: bayesreg_mgca_pooled_bcp
-      Marine sediments_mgca_pooled_red: deepmip_mgca
-      Marine sediments_mgca_pooled_bcp: deepmip_mgca
+      Marine sediments_mgca_pooled_red: bayesreg_mgca_pooled_red
+      Marine sediments_mgca_pooled_bcp: bayesreg_mgca_pooled_bcp
+      #Marine sediments_mgca_pooled_red: deepmip_mgca
+      #Marine sediments_mgca_pooled_bcp: deepmip_mgca
       Marine sediments_caco3: cgenie_caco3
       Marine sediments_caco3_13c: cgenie_caco3_13c
     proxy_assim2:

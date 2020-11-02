@@ -360,7 +360,7 @@ def obs_qc(Ye, obs, obs_err, proxy_qc):
         else:
             return True
         
-def proxy_frac_4da_eval(proxy_select,proxy_frac):
+def proxy_frac_4da_eval(proxy_select,proxy_frac,log_level):
     from random import sample
     # INPUT
     #    proxy_select: dataframe including all sites
@@ -369,8 +369,9 @@ def proxy_frac_4da_eval(proxy_select,proxy_frac):
     site_len_assim = int(site_len*proxy_frac)
     index_assim = sample(list(range(0,site_len)), site_len_assim)
     index_eval  = list(set(range(0,site_len)) - set(index_assim)) # list indices of sites not chosen
-    print('>>  Selected index: {}'.format(index_assim))
-    print('>>  Unselected index: {}'.format(index_eval))
+    if log_level > 1:
+        print('>>  Selected index: {}'.format(index_assim))
+        print('>>  Unselected index: {}'.format(index_eval))
     sites_eval = []
     assim_i = 0
     eval_i = 0
