@@ -1,4 +1,0 @@
-File,Type,Proxy,Lat,Lon,prePETMmean,prePETMstd,prePETMn,PETMmean,PETMstd,PETMn,postPETMmean,postPETMstd,postPETMn,dProxy,dProxystd,d18osw_local,Site,Glassy,mg_bcp_red,prePETMmeanRaw,PETMmeanRaw,postPETMmeanRaw
-kozdon2013-865d18omorozovellasims.txt,d18O,d18o_morozovella,4.85,-163.85,-3.1044,0.247,5,-3.9734,0.159,6,-3.2864,0.292,4,-0.869,0.293751596,-0.1536,865,glassy,,-3.258,-4.127,-3.44
-aze2014-tanzaniad18omorozovella.txt,d18O,d18o_morozovella,-24.65,23.2,-3.384062857,0.386942977,28,-3.623586667,0.064291005,3,-3.98067,0.435822293,8,-0.23952381,0.392247627,-0.05308,tanzania,glassy,,-3.437142857,-3.676666667,-4.03375
-schoon2013-fursectionnorthsea.txt,TEX86,tex86,52.65,-35,0.53,0.07,3,0.738,0.0342,5,0.56,0.04243,2,0.208,0.077907894,nan,fur,,,0.53,0.738,0.56
