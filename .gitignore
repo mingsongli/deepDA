@@ -1,5 +1,24 @@
+# test files
+
 *.nc
 *.hdf5
-/.ipynb_checkpoints
-/mlwrk
-/backup
+
+# system files
+.ipynb_checkpoints/
+
+# working folder
+mlwrk/
+misc/
+backup/
+src/
+verification/
+
+DeepDA_lib/.ipynb_checkpoints/
+DeepDA_lib/__pycache__/
+misc/.ipynb_checkpoints/
+
+# misc
+.DS_Store
+
+# test
+testmisc.ipynb

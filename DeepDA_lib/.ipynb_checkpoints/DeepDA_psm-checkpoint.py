@@ -1,16 +1,45 @@
 """
-functions
+Updated Oct 31, 2020: add forward model for d18O, TEX86
+
+By Mingsong Li
+   Penn State
+
+Functions
     
     d18o_localsw
     
     d18o_linear
-    
+        follow Bemis et al., 1998
+        
     d18oc_linear
+        follow Bemis et al., 1998
+        
+    d18oc_linear_forward
+        forward model, follow Bemis et al., 1998
     
     tex86_linear
     
+    tex86_linear_forward
+        forward model
+        
+    tex86h
+    
+    tex86h_forward
+    
     mgca_anand03
     
+    mgca_evans18
+        Evans et al., 2018
+        
+    mgca_evans18_forward
+        forward model
+        
+    mgca_sal_corr
+        salinity correction
+        
+    mgca_sal_corr_forward
+        forward model
+        
     obs_estimate_r_uk37
     
     obs_estimate_r_fixed_uk37    
@@ -41,10 +70,10 @@ functions
 import numpy as np
 from DeepDA_lib import modules_nc
 
-try:
-    import bayspline
-except ImportError as e1:
-    print('Warning:', e1)
+#try:
+#    import bayspline
+#except ImportError as e1:
+#    print('Warning:', e1)
 try:
     import bayspar
 except ImportError as e2:
@@ -70,6 +99,7 @@ def d18o_linear(d18oc,d18olocalsw,poly):
     
     # T = 16.1–4.64 * (δ18Oc–δ18Osw) + 0.09 * (δ18Oc−δ18Osw)2
     # by Bemis et al., 1998
+    # Hollis et al., 2019 GMD DeepMIP protocol
     
     alpha = 16.1
     beta  = -4.64
@@ -87,6 +117,7 @@ def d18oc_linear(d18oc,poly):
     # corrected d18oc
     # T = 16.1–4.64 * (δ18Oc–δ18Osw) + 0.09 * (δ18Oc−δ18Osw)2
     # by Bemis et al., 1998
+    # Hollis et al., 2019 GMD DeepMIP protocol
     
     alpha = 16.1
     beta  = -4.64
@@ -100,13 +131,58 @@ def d18oc_linear(d18oc,poly):
         print('poly must be either 1 or 2')
     return T
 
-def tex86_linear(tex86):
-    result = tex86 * 56.2 - 10.8
-    return result
+def d18oc_linear_forward(T,d18olocalsw):
+    # corrected d18oc
+    # T = 16.1–4.64 * (δ18Oc–δ18Osw) + 0.09 * (δ18Oc−δ18Osw)2
+    # by Bemis et al., 1998
+    # Hollis et al., 2019 GMD DeepMIP protocol
+    
+    a = 0.09
+    b = -4.64
+    c = 16.1 - T
+    
+    sq = np.sqrt( b * b - 4 * a * c)
+    d18o = (-1 * b - sq)/(2*a)
+    d18oc = d18o + d18olocalsw
+    return d18oc
 
+def tex86_linear(tex86):
+    '''
+    TEX86 = (GDGT-2 + GDGT-3 + cren')/(GDGT-1 + GDGT-2 + GDGT-3 + cren')
+    '''
+    T = tex86 * 56.2 - 10.8
+    return T
+
+def tex86_linear_forward(T):
+    tex86 = (T + 10.8) / 56.2
+    return tex86
+
+def tex86h(tex86):
+    '''
+    TEX86H = log10((GDGT-2 + GDGT-3 + cren')/(GDGT-1 + GDGT-2 + GDGT-3 + cren'))
+    
+    return sea surface temperature
+    Ref: Kim et al., 2010
+    By : Mingsong Li (Penn State, Nov 2020)
+    '''
+    tex86h = np.log10(tex86)
+    return 68.4 * tex86h + 38.6
+
+def tex86h_forward(sst):
+    '''
+    TEX86H = log10((GDGT-2 + GDGT-3 + cren')/(GDGT-1 + GDGT-2 + GDGT-3 + cren'))
+    TEX86H = log10(TEX86)
+    TEX86 = 10 ** TEX86H
+    return TEX86
+    Ref: Kim et al., 2010
+    By : Mingsong Li (Penn State, Nov 2020)
+    '''
+    tex86h = ( sst - 38.6 )/68.4
+    tex86 = 10**tex86h
+    return tex86
 
 def mgca_anand03(mgca, a, b, h, mgca_sw, mgca_swt):
-    
+    '''
     #    Based on Dunkley Jones et al., 2013 ESR
     #    T = 1/a * ln( MGCA )
     #    MGCA = mgca / b * mgca_sw ^ h / mgca_swt ^ h
@@ -118,13 +194,101 @@ def mgca_anand03(mgca, a, b, h, mgca_sw, mgca_swt):
     #            (Evans and Müller, 2012)
     #    mgca_sw = 5.15 mol/mol, Mg/Ca ratios of modern seawater
     #    mgca_swt, Mg/Ca ratios of ancient seawater, mgca_swt = 2 mol/mol for the latest Paleocene (Dunkley Jones et al., 2013)
-
+    '''
     ratio = mgca_sw ** h / mgca_swt ** h
     MGCA = mgca / b * ratio
     T = 1 / a * np.log(MGCA)
-    
     return T
 
+def mgca_evans18(mgca,ph,mgcasw):
+    '''
+    calculate temprature for Mg/Ca proxy
+    
+    INPUT
+        mgca  : size Nx1; mg/ca measured raw data
+        ph    : size Nx1; surface seawater pH
+        mgcasw: size Nx1; Mg/Casw seawater Mg/Ca ratio
+    OUTPUT
+        T     : size Nx1; Temperature
+    
+    Example #1
+        mgca = np.array([3,4,5,6])
+        ph = np.array([7.7,7.6,7.7,7.7])
+        mgcasw = np.array([4.3,4.5,2.5,3.0])
+        T = DeepDA_psm.mgca_evans18(mgca,ph,mgcasw)
+    Example #2
+        mgca = 3.85
+        ph = 7.654
+        mgcasw = 1.9216  # mean of seawater Mg/Ca at 56.0 Ma
+        T = DeepDA_psm.mgca_evans18(mgca,ph,mgcasw)
+        
+    By Mingsong Li, Penn State, May 2, 2020 Matlab
+        updated Nov 1, 2020 for python
+        
+    Reference:
+        Evans, D., Brierley, C., Raymo, M.E., Erez, J., Müller, W., 
+        2016. Planktic foraminifera shell chemistry response to seawater 
+        chemistry: Pliocene–Pleistocene seawater Mg/Ca, temperature and 
+        sea level change. Earth and Planetary Science Letters 438, 139-148.
+      Evans, D., Sagoo, N., Renema, W., Cotton, L.J., Müller, W., Todd, J.A., 
+       Saraswati, P.K., Stassen, P., Ziegler, M., Pearson, P.N., 2018. 
+       Eocene greenhouse climate revealed by coupled clumped isotope-Mg/Ca 
+       thermometry. Proceedings of the National Academy of Sciences, 201714744.
+    
+    '''
+    #eq. 5 in Evans et al., 2018
+    denominator = 0.76 + 0.66/(1 + np.exp(6.9 * (ph-8.0)))
+    mgcanorm = mgca/denominator
+    #eq. 6 in Evans et al., 2018
+    B = 0.019 * mgcasw ** 2 - 0.16 * mgcasw + 0.804
+    A = -0.0029 * mgcasw ** 2 + 0.032 * mgcasw
+    
+    t1 = 1/A
+    t2 = np.log(mgcanorm/B)
+    T = t1 * t2
+    return T
+
+def mgca_evans18_forward(T,ph,mgcasw):
+    '''
+    Mg/Ca forward model
+    
+    T: sst
+    ph: ph
+    mgcasw: Mg/Casw sea water Mg/Ca
+    Ref: Evans et al., 2018
+    By : Mingsong Li (Penn State, Nov 1, 2020)
+    '''
+    #eq. 6 in Evans et al., 2018
+    B = 0.019 * mgcasw ** 2 - 0.16 * mgcasw + 0.804
+    A = -0.0029 * mgcasw ** 2 + 0.032 * mgcasw
+    mgcanorm = B * np.exp(A * T)
+    
+    denominator = 0.76 + 0.66/(1 + np.exp(6.9 * (ph-8.0)))
+    
+    mgca = mgcanorm * denominator
+    
+    return mgca
+    
+def mgca_sal_corr(mgca,salinity):
+    '''
+    Salinity correction
+    Ref: Hollis et al., 2019 GMD
+    By : Mingsong Li (Penn State, Nov 1, 2020)
+    '''
+    return (1- (salinity - 35) * 0.042) * mgca
+
+def mgca_sal_corr_forward(mgcacorr,salinity):
+    '''
+    Input
+        mgcacorr: corrected mg/ca
+    OUTPUT
+        mgca: measured Mg/Ca before salinity correction
+    Ref: Hollis et al., 2019 GMD
+    By : Mingsong Li (Penn State, Nov 1, 2020)
+    '''
+    param = 1 - (salinity - 35) * 0.042
+    return mgcacorr/param
+    
 def obs_estimate_r_uk37(obs):
     # return R for the observation using PSMs
     y = bayspline.predict_uk(sst=obs)
@@ -314,7 +478,8 @@ def cal_ye_cgenie(yml_dict,proxies,j,Xb,proxy_assim2,proxy_psm_type,dum_lon_offs
             # d18o_localsw using method by Zachos et al., 1994 PALEOCEANOGRAPHY
             #d18o_localsw = DeepDA_psm.d18o_localsw(abs(dum_lat))
             x = abs(dum_lat)
-            d18o_localsw = 0.576 + 0.041 * x - 0.0017 * x ** 2 + 1.35e-5 * x ** 3
+            #d18o_localsw = 0.576 + 0.041 * x - 0.0017 * x ** 2 + 1.35e-5 * x ** 3
+            d18o_localsw = d18o_localsw(x)
             prediction_d18O = bayfox.predict_d18oc(prior_1grid,d18o_localsw + psm_d18osw_adjust) # pool model for bayfox
         else:
             if d18osw_icesm_pco2 == 1.0:
@@ -330,6 +495,26 @@ def cal_ye_cgenie(yml_dict,proxies,j,Xb,proxy_assim2,proxy_psm_type,dum_lon_offs
         
         Ye = np.mean(prediction_d18O.ensemble, axis = 1)
         
+    elif proxy_psm_type_i in ['deepmip_d18o']:
+        psm_d18osw_adjust = yml_dict['psm']['deepmip_d18o']['psm_d18osw_adjust']
+        d18osw_local_choice = yml_dict['psm']['deepmip_d18o']['d18osw_local_choice']
+        d18osw_icesm_pco2 = yml_dict['psm']['deepmip_d18o']['d18osw_icesm_pco2']
+        if d18osw_local_choice in ['zachos94']:
+            x = abs(dum_lat)
+            d18o_localsw = d18o_localsw(x)
+            Ye = d18oc_linear_forward(prior_1grid,d18o_localsw + psm_d18osw_adjust)
+        else:
+            if d18osw_icesm_pco2 == 1.0:
+                proxy_col_d18osw = 'd18osw_1x'
+            elif d18osw_icesm_pco2 == 6.0:
+                proxy_col_d18osw = 'd18osw_6x'
+            elif d18osw_icesm_pco2 == 9.0:
+                proxy_col_d18osw = 'd18osw_9x'
+            else:
+                proxy_col_d18osw = 'd18osw_3x'
+            d18o_localsw = proxies[proxy_col_d18osw][j]
+            Ye = d18oc_linear_forward(prior_1grid,d18o_localsw)
+    
     elif proxy_psm_type_i in ['bayesreg_tex86']:
         # bayspar
         search_tol_i = yml_dict['psm']['bayesreg_tex86']['search_tol']
@@ -340,6 +525,9 @@ def cal_ye_cgenie(yml_dict,proxies,j,Xb,proxy_assim2,proxy_psm_type,dum_lon_offs
             print('  Warning. search_tol may be too small. try a larger number + 10')
             prediction = bayspar.predict_tex_analog(prior_1grid, temptype = 'sst', search_tol = search_tol_i + 10, nens=nens_i)
         Ye = np.mean(prediction.ensemble, axis = 1)
+        
+    elif proxy_psm_type_i in ['tex86h_forward']:
+        Ye = tex86h_forward(prior_1grid)
         
     elif proxy_psm_type_i in ['cgenie_caco3']:
         Ye = np.copy(prior_1grid)
@@ -372,11 +560,6 @@ def cal_ye_cgenie_mgca(yml_dict,proxies,j,Xb,proxy_psm_type_i,dum_lon_offset,dum
     for key, value in proxy_assim2.items():
         if data_psm_type in proxy_assim2[key]:
             data_psm_type_find = data_psm_type_find + 1
-    #if data_psm_type_find == 1:
-    #    for key, value in proxy_psm_type.items():
-    #        if data_psm_type in proxy_assim2[key]:
-    #            data_psm_key = key
-        #proxy_psm_type_i = proxy_psm_type[data_psm_key]
     
     ###### Read Prior dic ####
     # save prior variable list
@@ -420,22 +603,23 @@ def cal_ye_cgenie_mgca(yml_dict,proxies,j,Xb,proxy_psm_type_i,dum_lon_offset,dum
     # read prior
     prior_1grid = np.copy(Xb[lonlati,:])   # prior
 
-    #if proxy_psm_type in ['bayesreg_mgca_pooled_red', 'bayesreg_mgca_pooled_bcp']:
-    #print('... bayesreg_mgca_pooled_red: To be done ...')
-    if proxy_psm_type_i in ['bayesreg_mgca_pooled_red']:
-        clearning_one = cleaningr
-        proxy_explain = 'reductive'
-    elif proxy_psm_type_i in ['bayesreg_mgca_pooled_bcp']:
-        clearning_one = cleaningb
-        proxy_explain = 'barker'
-
     salinity =  np.copy(Xb_sal[lonlati,:])
     ph       =  np.copy(Xb_ph[lonlati,:])
-    omega    =  np.copy(Xb_omega[lonlati,:])
-
-    prediction_mgca = baymag.predict_mgca(prior_1grid, clearning_one, salinity, ph, omega, spp) # pool model for baymag reductive
-    pred_mgca_adj = baymag.sw_correction(prediction_mgca, np.array([geologic_age]))
-    Ye = np.mean(pred_mgca_adj.ensemble, axis = 1)
+    if proxy_psm_type_i in ['bayesreg_mgca_pooled_red', 'bayesreg_mgca_pooled_bcp']:
+        if proxy_psm_type_i in ['bayesreg_mgca_pooled_red']:
+            clearning_one = cleaningr
+            proxy_explain = 'reductive'
+        elif proxy_psm_type_i in ['bayesreg_mgca_pooled_bcp']:
+            clearning_one = cleaningb
+            proxy_explain = 'barker'
+        omega    =  np.copy(Xb_omega[lonlati,:])
+        prediction_mgca = baymag.predict_mgca(prior_1grid, clearning_one, salinity, ph, omega, spp) # pool model for baymag reductive
+        pred_mgca_adj = baymag.sw_correction(prediction_mgca, np.array([geologic_age]))
+        Ye = np.mean(pred_mgca_adj.ensemble, axis = 1)
+    else:
+        mgcasw = yml_dict['psm'][proxy_psm_type_i]['mgcasw']
+        mgcacorr = mgca_evans18_forward(prior_1grid,ph,mgcasw)
+        Ye = mgca_sal_corr_forward(mgcacorr,salinity)
     return Ye
 
 def CE_NS70(data, model, axis):
