@@ -8,10 +8,9 @@
 
 # working folder
 mlwrk/
-misc/
 backup/
 src/
-verification/
+#verification/
 
 DeepDA_lib/.ipynb_checkpoints/
 DeepDA_lib/__pycache__/
