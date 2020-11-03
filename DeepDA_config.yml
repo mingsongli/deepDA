@@ -14,15 +14,14 @@
 #  1. Revise the following settings
 #  2. If prior lacking field, try correc_xxx.ipynb within the 'utils' folder
 #  3. Run DeepDA_allMC.ipynb
-# 
-
+#  
 
 # Control logging output. (0 = none; 1 = most important; 2 = many; 3 = a lot; >=4 all)
 log_level: 3
 
 MonteCarlo:
   # number: integer 1 = single run;  >1 = monte carlo simulations
-  number: 2
+  number: 100
   multi_seed: [
       0,   1,   2,   3,   4,   5,   6,   7,   8,   9,  10,  11,  12,
      13,  14,  15,  16,  17,  18,  19,  20,  21,  22,  23,  24,  25,
@@ -36,9 +35,13 @@ MonteCarlo:
 
 core:
   # DTDA exp name
-  nexp: _petm18_v18h2_2021030_MgDeepMIP_MC5seed_testMac
-  nexp: _petm18_v18h2_2021030_Mg_MC5seed_testMac
+  #nexp: _petm18_v18h2_2021030_Mg_MC5seed_testMac
   #nexp: _petm15_v14_20200617all_glassy_pre_noCaCO3_oswcesm
+  #nexp: _petm17_v18_2021102_O_deepmip_MCsd100
+  nexp: _petm17_v18_2021102_M_deepmip_MCsd100
+  nexp: _petm17_v18_2021102_T_texh_e_MCsd100
+  nexp: _petm17_v18_2021102_TOM_deepmip_texh_MCsd100
+  nexp: _petm17_v18_2021102_OM_MCsd100
   
   # project directory for input data
   proj_dir: /mnt/c/Users/mul450/Dropbox/git/deepDA/mlwrk   # for Linux
@@ -55,8 +58,8 @@ core:
   # prior directory for ensemble members
   #prior_dir: /mnt/d/cGENIE/ML.petm/ML.petm017    # for Linux
   prior_dir: /mnt/d/cGENIE/ML.petm/ML.petm018    # for Linux
-  #prior_dir: /volumes/DA/cGENIE/ML.petm/ML.petm017    # for MacOS
-  prior_dir: /volumes/DA/cGENIE/ML.petm/ML.petm018    # for MacOS
+  prior_dir: /volumes/DA/cGENIE/ML.petm/ML.petm017    # for MacOS
+  #prior_dir: /volumes/DA/cGENIE/ML.petm/ML.petm018    # for MacOS
   
   # reconstruction period
   #recon_period: !!python/tuple [0, 0]
@@ -130,9 +133,9 @@ proxies:
   petm3slices:
     #dbversion: 'petmproxy3slices_v0.0.14.csv'   # include d18Osw from iCESM from Zhu et al., 2019 (SciAdv)
     #dbversion: 'petmproxy3slices_v0.0.17.csv'   # include SIMSd18O@690 & TEX@Fur
-    #dbversion: 'petmproxy3slices_v0.0.18.csv'   # include multiple proxy data, help from Jess
+    dbversion: 'petmproxy3slices_v0.0.18.csv'   # include multiple proxy data, help from Jess
     #dbversion: 'petmproxy3slices_v0.0.18hiatus.csv'   # include multiple proxy data, help from Jess
-    dbversion: 'petmproxy3slices_v0.0.18hiatus2.csv'   # include multiple proxy data, help from Jess
+    #dbversion: 'petmproxy3slices_v0.0.18hiatus2.csv'   # include multiple proxy data, help from Jess
     #dbversion: 'petmproxy3slices_v0.0.13.csv' 
     # ... feature not included ...
     dataformat_proxy: 'DF'
@@ -146,10 +149,12 @@ proxies:
     
     # evaluation method: 
     #    proxy_err_psm: error derived from PSM only using real observation value
-    #    proxy_err_psm_fixed: error derived from PSM only using default observation value
-    #    proxy_err_psm_mp: PSM error + multiple points variance included
+    #    proxy_err_psm_fixed: error derived from Bayesian PSM only using default observation value
+    #    proxy_err_psm_mp: Bayesian PSM error + multiple points variance included
+    #    proxy_err_eval: user-defined; much faster? see below
     proxy_err_eval: 'proxy_err_psm_fixed'
     #proxy_err_eval: 'proxy_err_psm_mp'
+    #proxy_err_eval: 'user-defined'
     
     # ... feature not included ...
     database_filter: []
@@ -178,61 +183,54 @@ proxies:
     # exclude Mg/Ca
     #proxy_blacklist: [
     #  'Marine sediments_mgca_pooled_bcp',
-    #  'Marine sediments_mgca_pooled_red',
-    #  'Marine sediments_mgca']
+    #  'Marine sediments_mgca_pooled_red']
     
     ## exclude CaCO3
     #proxy_blacklist: ['Marine sediments_caco3']
     
     # d18O + Mg/Ca
-    #proxy_blacklist: [
-    #  'Marine sediments_caco3',
-    #  'Marine sediments_tex86']
+    proxy_blacklist: [
+      'Marine sediments_caco3',
+      'Marine sediments_tex86']
     
     # d18O + CaCO3
     #proxy_blacklist: ['Marine sediments_tex86',
     #  'Marine sediments_mgca_pooled_bcp',
-    #  'Marine sediments_mgca_pooled_red',
-    #  'Marine sediments_mgca']
+    #  'Marine sediments_mgca_pooled_red']
     
     ## d18O + CaCO3
     #proxy_blacklist: [
     #  'Marine sediments_d18o_pooled',
     #  'Marine sediments_mgca_pooled_bcp',
-    #  'Marine sediments_mgca_pooled_red',
-    #  'Marine sediments_mgca']
+    #  'Marine sediments_mgca_pooled_red']
     
     ## d18O + TEX 
     #proxy_blacklist: ['Marine sediments_caco3',
     #  'Marine sediments_mgca_pooled_bcp',
-    #  'Marine sediments_mgca_pooled_red',
-    #  'Marine sediments_mgca']
+    #  'Marine sediments_mgca_pooled_red']
     
     ## CaCO3 only
     #proxy_blacklist: ['Marine sediments_tex86',
     #  'Marine sediments_d18o_pooled',
     #  'Marine sediments_mgca_pooled_bcp',
-    #  'Marine sediments_mgca_pooled_red',
-    #  'Marine sediments_mgca']
+    #  'Marine sediments_mgca_pooled_red']
     
     ## TEX only
     #proxy_blacklist: ['Marine sediments_d18o_pooled',
     #  'Marine sediments_caco3',
     #  'Marine sediments_mgca_pooled_bcp',
-    #  'Marine sediments_mgca_pooled_red',
-    #  'Marine sediments_mgca']
+    #  'Marine sediments_mgca_pooled_red']
     
     ## d18O only
     #proxy_blacklist: ['Marine sediments_tex86',
     #  'Marine sediments_caco3',
     #  'Marine sediments_mgca_pooled_bcp',
-    #  'Marine sediments_mgca',
     #  'Marine sediments_mgca_pooled_red']
     
     ## Mg/Ca only
-    proxy_blacklist: ['Marine sediments_tex86',
-      'Marine sediments_d18o_pooled',
-      'Marine sediments_caco3']
+    #proxy_blacklist: ['Marine sediments_tex86',
+    #  'Marine sediments_d18o_pooled',
+    #  'Marine sediments_caco3']
     
     proxy_order_type: random
     
@@ -270,10 +268,10 @@ proxies:
       Marine sediments_tex86: tex86h_forward
       #Marine sediments_d18o_pooled: bayesreg_d18o_pooled
       Marine sediments_d18o_pooled: deepmip_d18o
-      Marine sediments_mgca_pooled_red: bayesreg_mgca_pooled_red
-      Marine sediments_mgca_pooled_bcp: bayesreg_mgca_pooled_bcp
-      #Marine sediments_mgca_pooled_red: deepmip_mgca
-      #Marine sediments_mgca_pooled_bcp: deepmip_mgca
+      #Marine sediments_mgca_pooled_red: bayesreg_mgca_pooled_red
+      #Marine sediments_mgca_pooled_bcp: bayesreg_mgca_pooled_bcp
+      Marine sediments_mgca_pooled_red: deepmip_mgca
+      Marine sediments_mgca_pooled_bcp: deepmip_mgca
       Marine sediments_caco3: cgenie_caco3
       Marine sediments_caco3_13c: cgenie_caco3_13c
     proxy_assim2:
@@ -332,7 +330,8 @@ psm:
     psm_required_variables:
       ocn_sur_temp: 'full'
     temptype: 'sst'
-    psm_error: .1
+    psm_error: 0.01
+    # variance fixed bayspar
     
   bayesreg_d18o:
     psm_required_nc: '/biogem/fields_biogem_2d.nc'
@@ -362,7 +361,8 @@ psm:
     d18osw_local_choice: 'zhu19'
     d18osw_icesm_pco2: 3.0  # prePETM
     #d18osw_icesm_pco2: 6.0  # PETM
-    psm_error: 0.1
+    psm_error: 0.4
+    # variance fixed bayfox
     
   bayesreg_mgca:
     psm_required_nc: '/biogem/fields_biogem_2d.nc'
@@ -377,7 +377,8 @@ psm:
       ocn_sur_temp: 'full'
     mgcasw: 2.5
     # for PETM; from Evans et al., 2018
-    psm_error: 0.1
+    # variance fixed baymagpy
+    psm_error: 0.5
     
   bayesreg_mgca_pooled_bcp:
     psm_required_nc: '/biogem/fields_biogem_2d.nc'
