@@ -274,6 +274,13 @@ def mgca_evans18_forward(T,ph,mgcasw):
 def mgca_sal_corr(mgca,salinity):
     '''
     Salinity correction
+    
+    INPUT:
+      mgca: Mg/Ca_MEASURED
+      salinity: salinity
+      
+    OUTPUT:
+      Mg/Ca_CORRECTED
     Ref: Hollis et al., 2019 GMD
     By : Mingsong Li (Penn State, Nov 1, 2020)
     '''
