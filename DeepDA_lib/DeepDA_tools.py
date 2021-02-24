@@ -105,4 +105,3 @@ def rank_histogram(ensemble, value):
     rank = Lsort_index.index(len(Lensemble)-1)
 
     return rank
-

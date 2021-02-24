@@ -65,6 +65,8 @@ Functions
     cal_ye_cgenie_mgca
     
     CE_NS70
+    
+    rmse
 
 """
 import numpy as np
@@ -97,7 +99,7 @@ def d18o_localsw(x):
 
 def d18o_linear(d18oc,d18olocalsw,poly):
     
-    # T = 16.1–4.64 * (δ18Oc–δ18Osw) + 0.09 * (δ18Oc−δ18Osw)2
+    # T = 16.1–4.64 * (δ18Oc–δ18Osw) + 0.09 * (δ18Oc−δ18Osw)^2
     # by Bemis et al., 1998
     # Hollis et al., 2019 GMD DeepMIP protocol
     
@@ -272,6 +274,13 @@ def mgca_evans18_forward(T,ph,mgcasw):
 def mgca_sal_corr(mgca,salinity):
     '''
     Salinity correction
+    
+    INPUT:
+      mgca: Mg/Ca_MEASURED
+      salinity: salinity
+      
+    OUTPUT:
+      Mg/Ca_CORRECTED
     Ref: Hollis et al., 2019 GMD
     By : Mingsong Li (Penn State, Nov 1, 2020)
     '''
@@ -630,7 +639,7 @@ def CE_NS70(data, model, axis):
         model: model, the same size as data
         axis: = 0 : n x m; m is value; n is time
     Outputs:
-    CE: The Nash-Sutcliffe model efficiency coefficient statistic calculated following Nash & Sutcliffe (1970)
+        CE: The Nash-Sutcliffe model efficiency coefficient statistic calculated following Nash & Sutcliffe (1970)
     Borrowed from LMR_utils.py by Greg Hakim & Robert Tardif, 2015
     '''
     if axis == 0:
@@ -644,3 +653,6 @@ def CE_NS70(data, model, axis):
         
     
     return CE
+
+def rmse(predictions, targets):
+    return np.sqrt(np.nanmean((predictions - targets) ** 2))

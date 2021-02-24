@@ -5,6 +5,8 @@
 %% PETM015: 
 % test sensitivity, 2 myr run from cold start with
 % with variable pCO2 and delta F 2x (2, 4 default, 6 some, 8, 10, and 12)
+%% PETM016ï¼š
+% 
 %% Steps
 % 1. read folder name, get pCO2, delf2x, values
 % 2. read interested states: such as pCO2, ALK, SLT, SST, Global temperature, pH, CaCO3
@@ -12,7 +14,11 @@
 % 4. plot
 %%
 % ensemble directory
-ens_dir = 'D:\cGENIE\ML.petm\ML.petm016\';
+if ispc
+ens_dir = 'D:\cGENIE\ML.petm\ML.petm015\';
+else
+    ens_dir ='/Volumes/DA/cGENIE/ML.petm/ML.petm015';
+end
 
 % CESM CAM5 ECS
 cesm =[1,3.5; 3,6.6; 6,9.7];
@@ -195,7 +201,7 @@ figure; plot(x, y,'k-o');xlabel('pCO2 (ppm)');ylabel('delf2x');
 title('polyfit')
 hold on;
 plot(278, 5.77,'bo')
-text(320,5.8,'(default: 278 ppm, delf2x = 5.77, ECS = 3.3°C)')
+text(320,5.8,'(default: 278 ppm, delf2x = 5.77, ECS = 3.3ï¿½C)')
 
 data= [x,y];
 [data]=interpolate(data,10);
