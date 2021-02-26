@@ -17,7 +17,7 @@
 #  
 
 # Control logging output. (0 = none; 1 = most important; 2 = many; 3 = a lot; >=4 all)
-log_level: 2
+log_level: 4
 
 MonteCarlo:
   # number: integer 1 = single run;  >1 = monte carlo simulations
@@ -60,7 +60,28 @@ core:
   #nexp: _petm17_v18_2021212_Ca_e100_MCsd100_qc3
   #nexp: _petm18_v18_2021212_Ca_e100_MCsd100_qc3
   #nexp: _petm18_v18_2021212_Ca_e25_MCsd100_qc3
-  nexp: _petm27_v18_20210224_TOM_deepmip_Rscale7_MCsd100
+  
+  #nexp: _petm27_v18_20210224_TOM_Ca100_deepmip_3slice_MCsd100_R1
+  nexp: _petm27_v18_20210224_TOM_Ca100_deepmip_MCsd100_R1_testPO # proxy order
+  #nexp: _petm18_v18_20210224_TOM_Ca25_deepmip_peakPETM_MCsd100_R1
+  nexp: _petm18_v18_20210224_TOM_Ca25_deepmip_peakPETM_MCsd100_R1_testPO # proxy order
+  #nexp: _petm27_v18_20210224_TOM_Ca100_bays_3slice_MCsd100_R1
+  #nexp: _petm27_v18_20210224_TOM_Ca25_deepmip_MCsd100_R1
+  #nexp: _petm27_v18_20210224_TOM_deepmip_MCsd100_R1
+  #nexp: _petm27_v18_20210224_TOM_deepmip_3slice_MCsd100_R1
+  #nexp: _petm27_v18_20210224_OM_Ca100_deepmip_MCsd100_R1
+  #nexp: _petm27_v18_20210224_TM_Ca100_deepmip_MCsd100_R1
+  #nexp: _petm27_v18_20210224_TO_Ca100_deepmip_MCsd100_R1
+  #nexp: _petm27_v18_20210224_T_deepmip_MCsd100_R1
+  #nexp: _petm27_v18_20210224_T_texh_MCsd100_R1
+  #nexp: _petm27_v18_20210224_O_deepmip_MCsd100_R1
+  #nexp: _petm27_v18_20210224_M_deepmip_MCsd100_R1
+  #nexp: _petm27_v18_20210224_Ca100_deepmip_MCsd100_R1
+  
+  
+  #nexp: _petm27_v18_20210224_O_bays_MCsd100_R1
+  #nexp: _petm27_v18_20210224_M_bays_MCsd100_R1
+  #nexp: _petm18_v18_20210224_TOM_Ca100_deepmip_MCsd100_R1
   
   # project directory for input data
   #proj_dir: /mnt/c/Users/mul450/Dropbox/git/deepDA/mlwrk   # for Linux
@@ -78,13 +99,13 @@ core:
   #prior_dir: /mnt/d/cGENIE/ML.petm/ML.petm017    # for Linux
   #prior_dir: /mnt/d/cGENIE/ML.petm/ML.petm018    # for Linux
   #prior_dir: /volumes/DA/cGENIE/ML.petm/ML.petm017    # for MacOS
-  #prior_dir: /volumes/DA/cGENIE/ML.petm/ML.petm018    # for MacOS
-  prior_dir: /volumes/DA/cGENIE/ML.petm/petm027.cesm.prePETM    # for MacOS
+  prior_dir: /volumes/DA/cGENIE/ML.petm/ML.petm018    # for MacOS
+  #prior_dir: /volumes/DA/cGENIE/ML.petm/petm027.cesm.prePETM    # for MacOS
   
   # reconstruction period
   #recon_period: !!python/tuple [0, 2]
-  recon_period: !!python/tuple [0, 0]
-  #recon_period: !!python/tuple [1, 2]
+  #recon_period: !!python/tuple [0, 0]
+  recon_period: !!python/tuple [1, 1]
   #recon_period: !!python/tuple [0, 3]
   # reconstruction time scale step
   recon_timescale_interval: 1
@@ -112,9 +133,9 @@ core:
   # Tierney et al 2020, doi: 10.31223/osf.io/me5uj
   #Rscale: !!python/tuple [2.0, 0.5, 0.2, 0.1, 0.05, 0.01, 0.002]
   #Rscale: !!python/tuple [0.002]
-  Rscale: !!python/tuple [0.7]
+  #Rscale: !!python/tuple [0.7]
   #Rscale: !!python/tuple [1.0,0.5]
-  #Rscale: !!python/tuple [1.0]
+  Rscale: !!python/tuple [1.0]
   #Rscale: !!python/tuple [0.05]
 
   # Ensemble saving option, save full ensemble: True or False
@@ -195,7 +216,7 @@ proxies:
     ]
     
     ## All in
-    #proxy_blacklist: []
+    proxy_blacklist: []
     
     ## exclude TEX86
     #proxy_blacklist: ['Marine sediments_tex86']
@@ -209,7 +230,7 @@ proxies:
     #  'Marine sediments_mgca_pooled_red']
     
     ## exclude CaCO3  = TOM
-    proxy_blacklist: ['Marine sediments_caco3']
+    #proxy_blacklist: ['Marine sediments_caco3']
     
     # d18O + Mg/Ca
     #proxy_blacklist: [
@@ -430,7 +451,7 @@ psm:
     psm_required_variables:
       sed_CaCO3: 'full'
     psm_error: 100.0
-    psm_error: 25.0
+    #psm_error: 25.0
       
   cgenie_caco3_13c:
     psm_required_nc: '/sedgem/fields_sedgem_2d.nc'
