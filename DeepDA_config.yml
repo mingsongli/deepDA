@@ -17,11 +17,11 @@
 #  
 
 # Control logging output. (0 = none; 1 = most important; 2 = many; 3 = a lot; >=4 all)
-log_level: 4
+log_level: 1
 
 MonteCarlo:
   # number: integer 1 = single run;  >1 = monte carlo simulations
-  number: 100
+  number: 10
   multi_seed: [
       0,   1,   2,   3,   4,   5,   6,   7,   8,   9,  10,  11,  12,
      13,  14,  15,  16,  17,  18,  19,  20,  21,  22,  23,  24,  25,
@@ -37,7 +37,6 @@ core:
   # DTDA exp name
   #nexp: _petm18_v18h2_2021030_Mg_MC5seed_testMac
   #nexp: _petm17_v18_2021102_O_deepmip_MCsd100
-  #nexp: _petm18_v18_2021213_O_deepmip_MCsd100
   #nexp: _petm18_v18_2021213_O_bays_MCsd100
   #nexp: _petm17_v18_2021102_M_deepmip_MCsd100
   #nexp: _petm18_v18_2021213_M_deepmip_MCsd100
@@ -61,27 +60,48 @@ core:
   #nexp: _petm18_v18_2021212_Ca_e100_MCsd100_qc3
   #nexp: _petm18_v18_2021212_Ca_e25_MCsd100_qc3
   
+  #nexp: _petm18_v18_20210224_TOM_Ca100_deepmip_MCsd100_R1
+  #nexp: _petm18_v18_20210228_TOM_Ca100_deepmip_MCsd100_testR
+  #nexp: _petm18_v18_20210224_TOM_Ca100_bays_MCsd100_R1
+  #nexp: _petm18_v18_20210227_TOM_deepmip_MCsd100_R1
+  nexp: _petm18_v18_20210228_TOM_deepmip_MCsd100_testR
+  nexp: _petm18_test
+  #nexp: _petm18_v18_20210227_TOM_bays_MCsd100_R1
+  #nexp: _petm18_v18_20210227_OM_Ca100_deepmip_MCsd100_R1
+  #nexp: _petm18_v18_20210227_TM_Ca100_deepmip_MCsd100_R1
+  #nexp: _petm18_v18_20210227_TO_Ca100_deepmip_MCsd100_R1
+  #nexp: _petm18_v18_20210227_O_deepmip_MCsd100_R1
+  #nexp: _petm18_v18_20210224_O_bays_MCsd100_R1
+  #nexp: _petm18_v18_20210224_T_deepmip_MCsd100_R1
+  #nexp: _petm18_v18_20210224_T_texh_MCsd100_R1
+  #nexp: _petm18_v18_20210224_M_deepmip_MCsd100_R1
+  #nexp: _petm18_v18_20210224_M_bays_MCsd100_R1
+  #nexp: _petm18_v18_20210224_Ca100_deepmip_MCsd100_R1
+  
   #nexp: _petm27_v18_20210224_TOM_Ca100_deepmip_3slice_MCsd100_R1
-  nexp: _petm27_v18_20210224_TOM_Ca100_deepmip_MCsd100_R1_testPO # proxy order
+  #nexp: _petm27_v18_20210228_TOM_Ca100_deepmip_MCsd100_testR # proxy order
+  #nexp: _petm27_v18_20210228_TOM_deepmip_MCsd100_testR
   #nexp: _petm18_v18_20210224_TOM_Ca25_deepmip_peakPETM_MCsd100_R1
-  nexp: _petm18_v18_20210224_TOM_Ca25_deepmip_peakPETM_MCsd100_R1_testPO # proxy order
+  #nexp: _petm18_v18_20210224_TOM_Ca25_deepmip_peakPETM_MCsd100_R1_testPO # proxy order
   #nexp: _petm27_v18_20210224_TOM_Ca100_bays_3slice_MCsd100_R1
   #nexp: _petm27_v18_20210224_TOM_Ca25_deepmip_MCsd100_R1
   #nexp: _petm27_v18_20210224_TOM_deepmip_MCsd100_R1
   #nexp: _petm27_v18_20210224_TOM_deepmip_3slice_MCsd100_R1
+  #nexp: _petm27_v18_20210224_TOM_bays_3slice_MCsd100_R1
   #nexp: _petm27_v18_20210224_OM_Ca100_deepmip_MCsd100_R1
   #nexp: _petm27_v18_20210224_TM_Ca100_deepmip_MCsd100_R1
   #nexp: _petm27_v18_20210224_TO_Ca100_deepmip_MCsd100_R1
   #nexp: _petm27_v18_20210224_T_deepmip_MCsd100_R1
   #nexp: _petm27_v18_20210224_T_texh_MCsd100_R1
   #nexp: _petm27_v18_20210224_O_deepmip_MCsd100_R1
+  #nexp: _petm27_v18_20210224_O_bays_MCsd100_R1
   #nexp: _petm27_v18_20210224_M_deepmip_MCsd100_R1
+  #nexp: _petm27_v18_20210224_M_bays_MCsd100_R1
   #nexp: _petm27_v18_20210224_Ca100_deepmip_MCsd100_R1
   
   
   #nexp: _petm27_v18_20210224_O_bays_MCsd100_R1
   #nexp: _petm27_v18_20210224_M_bays_MCsd100_R1
-  #nexp: _petm18_v18_20210224_TOM_Ca100_deepmip_MCsd100_R1
   
   # project directory for input data
   #proj_dir: /mnt/c/Users/mul450/Dropbox/git/deepDA/mlwrk   # for Linux
@@ -131,11 +151,12 @@ core:
 
   # Scaling the global estimate of the proxy variance Rg
   # Tierney et al 2020, doi: 10.31223/osf.io/me5uj
-  #Rscale: !!python/tuple [2.0, 0.5, 0.2, 0.1, 0.05, 0.01, 0.002]
-  #Rscale: !!python/tuple [0.002]
+  Rscale: !!python/tuple [10.0, 2.0, 1.0, 0.5, 0.2, 0.1, 0.05, 0.01]
+  Rscale: !!python/tuple [0.01]
+  #Rscale: !!python/tuple [10.0, 1.0]
   #Rscale: !!python/tuple [0.7]
   #Rscale: !!python/tuple [1.0,0.5]
-  Rscale: !!python/tuple [1.0]
+  #Rscale: !!python/tuple [1.0]
   #Rscale: !!python/tuple [0.05]
 
   # Ensemble saving option, save full ensemble: True or False
@@ -216,7 +237,7 @@ proxies:
     ]
     
     ## All in
-    proxy_blacklist: []
+    #proxy_blacklist: []
     
     ## exclude TEX86
     #proxy_blacklist: ['Marine sediments_tex86']
@@ -225,16 +246,14 @@ proxies:
     #proxy_blacklist: ['Marine sediments_d18o_pooled']
     
     # exclude Mg/Ca
-    #proxy_blacklist: [
-    #  'Marine sediments_mgca_pooled_bcp',
+    #proxy_blacklist: ['Marine sediments_mgca_pooled_bcp',
     #  'Marine sediments_mgca_pooled_red']
     
     ## exclude CaCO3  = TOM
-    #proxy_blacklist: ['Marine sediments_caco3']
+    proxy_blacklist: ['Marine sediments_caco3']
     
     # d18O + Mg/Ca
-    #proxy_blacklist: [
-    #  'Marine sediments_caco3',
+    #proxy_blacklist: ['Marine sediments_caco3',
     #  'Marine sediments_tex86']
     
     # d18O + CaCO3
@@ -308,14 +327,14 @@ proxies:
     
     proxy_psm_type:
       Marine sediments_uk37: bayesreg_uk37
-      Marine sediments_tex86: bayesreg_tex86
+      Marine sediments_tex86: bayesreg_tex86                         # DeepMIP
       #Marine sediments_tex86: tex86h_forward
       #Marine sediments_d18o_pooled: bayesreg_d18o_pooled
-      Marine sediments_d18o_pooled: deepmip_d18o
+      Marine sediments_d18o_pooled: deepmip_d18o                     # DeepMIP
       #Marine sediments_mgca_pooled_red: bayesreg_mgca_pooled_red
       #Marine sediments_mgca_pooled_bcp: bayesreg_mgca_pooled_bcp
-      Marine sediments_mgca_pooled_red: deepmip_mgca
-      Marine sediments_mgca_pooled_bcp: deepmip_mgca
+      Marine sediments_mgca_pooled_red: deepmip_mgca                 # DeepMIP
+      Marine sediments_mgca_pooled_bcp: deepmip_mgca                 # DeepMIP
       Marine sediments_caco3: cgenie_caco3
       Marine sediments_caco3_13c: cgenie_caco3_13c
     proxy_assim2:
