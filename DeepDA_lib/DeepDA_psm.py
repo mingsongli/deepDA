@@ -535,7 +535,7 @@ def cal_ye_cgenie(yml_dict,proxies,j,Xb,proxy_assim2,proxy_psm_type,dum_lon_offs
         try:
             prediction = bayspar.predict_tex_analog(prior_1grid, temptype = 'sst', search_tol = search_tol_i, nens=nens_i)
         except:
-            print('  Warning. search_tol may be too small. try a larger number + 10')
+            print('  bayspar Warning. search_tol may be too small. try a larger number + 10')
             prediction = bayspar.predict_tex_analog(prior_1grid, temptype = 'sst', search_tol = search_tol_i + 10, nens=nens_i)
         Ye = np.mean(prediction.ensemble, axis = 1)
         
@@ -749,6 +749,9 @@ def cal_ye_cgenie_mgca(yml_dict,proxies,j,Xb,proxy_psm_type_i,dum_lon_offset,dum
     salinity =  np.copy(Xb_sal[lonlati,:])
     ph       =  np.copy(Xb_ph[lonlati,:])
     if proxy_psm_type_i in ['bayesreg_mgca_pooled_red', 'bayesreg_mgca_pooled_bcp']:
+        
+        psm_baymag_ln =  yml_dict['psm']['bayesreg_mgca_pooled_red']['psm_baymag_ln']
+        
         if proxy_psm_type_i in ['bayesreg_mgca_pooled_red']:
             clearning_one = cleaningr
             proxy_explain = 'reductive'
@@ -756,9 +759,15 @@ def cal_ye_cgenie_mgca(yml_dict,proxies,j,Xb,proxy_psm_type_i,dum_lon_offset,dum
             clearning_one = cleaningb
             proxy_explain = 'barker'
         omega    =  np.copy(Xb_omega[lonlati,:])
-        prediction_mgca = baymag.predict_mgca(prior_1grid, clearning_one, salinity, ph, omega, spp) # pool model for baymag reductive
-        pred_mgca_adj = baymag.sw_correction(prediction_mgca, np.array([geologic_age]))
+        
+        if psm_baymag_ln in ['no']:
+            prediction_mgca = baymag.predict_mgca(prior_1grid, clearning_one, salinity, ph, omega, spp) # pool model for baymag reductive
+            pred_mgca_adj = baymag.sw_correction(prediction_mgca, np.array([geologic_age]))
+        if psm_baymag_ln in ['yes']:
+            pred_mgca_adj = baymag.predict_mgca_ln_dt(geologic_age,prior_1grid, clearning_one, salinity, ph, omega, spp) # 
+            
         Ye = np.mean(pred_mgca_adj.ensemble, axis = 1)
+        
     else:
         mgcasw = yml_dict['psm'][proxy_psm_type_i]['mgcasw']
         mgcacorr = mgca_evans18_forward(prior_1grid,ph,mgcasw)
