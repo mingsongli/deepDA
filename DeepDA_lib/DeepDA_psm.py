@@ -23,7 +23,6 @@ Functions
     tex86_linear_forward
         forward model
         
-    tex86h
     
     tex86h_forward
     
