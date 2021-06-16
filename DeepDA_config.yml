@@ -17,7 +17,7 @@
 #  
 
 # Control logging output. (0 = none; 1 = most important; 2 = many; 3 = a lot; >=4 all)
-log_level: 4
+log_level: 3
 
 MonteCarlo:
   # number: integer 1 = single run;  >1 = monte carlo simulations
@@ -394,20 +394,19 @@ psm:
 
   bayesreg_mgca_pooled_red:
     psm_required_nc: '/biogem/fields_biogem_2d.nc'
+    
     psm_required_variables:
       ocn_sur_temp: 'full'
     seasonal_seatemp: False
     
     #bottom water calcite saturation grid definition
     
-    #water_saturation: 'surface'
-    #water_saturation_field: 'carb_sur_ohm_cal'
+    psm_required_nc_ohm: '/sedgem/fields_sedgem_2d.nc'    
+    water_saturation: 'bottom'
+    water_saturation_field: 'carb_ohm_cal'
     
-    #water_saturation: 'bottom'
-    #water_saturation_field: 'carb_ben_ohm_cal'
-    
-    water_saturation: 'fixed'
-    water_saturation_value: 5.0
+    #water_saturation: 'fixed'
+    #water_saturation_value: 5.0
     
     psm_required_nc_mg: '/biogem/fields_biogem_2d.nc'
     psm_baymag_ln: 'yes'  # yes = ln; no = normal
