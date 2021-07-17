@@ -9,6 +9,7 @@
 #     /Applications/MATLAB/MATLAB_Runtime/v96/sys/os/maci64/libgfortran.3.dylib.dylib  was renamed as:
 #     libgfortran.3.dylib.acycle.dylib; otherwise, scipy.stats won't work
 #  Updated Nov. 3, 2020; log_level
+# Updated July 15, 2021; Rscale_style: tuple or use dict
 
 # STEPS
 #  1. Revise the following settings
@@ -17,11 +18,11 @@
 #  
 
 # Control logging output. (0 = none; 1 = most important; 2 = many; 3 = a lot; >=4 all)
-log_level: 3
+log_level: 2
 
 MonteCarlo:
   # number: integer 1 = single run;  >1 = monte carlo simulations
-  number: 1
+  number: 100
   multi_seed: [
       0,   1,   2,   3,   4,   5,   6,   7,   8,   9,  10,  11,  12,
      13,  14,  15,  16,  17,  18,  19,  20,  21,  22,  23,  24,  25,
@@ -35,7 +36,12 @@ MonteCarlo:
 
 core:
   # DTDA exp name
-  nexp: _petm29_v19_20210616_allbays_MCsd100_pHcor_omega5
+  #nexp: _petm29_v19_20210616_allbays_MCsd100_pHcor_omega5
+  nexp: _petm29_v20_20210714_all_bays_MCsd100_pHcor_omega5_frac0.98
+  #nexp: _petm29_v20_20210715_d18o_bays_MCsd100_pHcor_omega5_frac0.95
+  #nexp: _petm29_v20_20210715_tex_bays_MCsd100_pHcor_omega5_frac0.95
+  #nexp: _petm29_v20_20210715_mgca_bays_MCsd100_pHcor_omega5_frac0.95
+  #nexp: _petm29_v20_20210715_caco3_bays_MCsd100_pHcor_omega5_frac0.95
   
   # project directory for input data
   #proj_dir: /mnt/c/Users/mul450/Dropbox/git/deepDA/mlwrk   # for Linux
@@ -43,7 +49,7 @@ core:
   
   # work directory for outputs
   #wrkdir: /mnt/d/DeepDA/wrk    # for Linux
-  wrkdir: /volumes/DA/DeepDA/wrk    # for MacOS  DA disk
+  #wrkdir: /volumes/DA/DeepDA/wrk    # for MacOS  DA disk
   wrkdir: /volumes/Backup/DeepDA    # for MacOS  Backup disk
   
   # directory for proxy data
@@ -58,13 +64,13 @@ core:
   #prior_dir: /volumes/DA/cGENIE/ML.petm018    # for MacOS
   #prior_dir: /volumes/DA/cGENIE/ML.petm/petm027.cesm.prePETM    # for MacOS
   #prior_dir: /volumes/DA/cGENIE/petm027.cesm.prePETM
-  prior_dir: /volumes/DA/cGENIE/ML.petm/petm029.petm    # for MacOS
+  #prior_dir: /volumes/DA/cGENIE/ML.petm/petm029.petm    # for MacOS
   prior_dir: /volumes/Backup/cgenie_output/ML.petm029    # for MacOS
   
   # reconstruction period
   #recon_period: !!python/tuple [0, 2]
-  recon_period: !!python/tuple [0, 1]
   #recon_period: !!python/tuple [0, 1]
+  recon_period: !!python/tuple [0, 1]
   #recon_period: !!python/tuple [1, 1]
   #recon_period: !!python/tuple [0, 3]
   # reconstruction time scale step
@@ -90,15 +96,28 @@ core:
   # ... feature not included ...
 #  inflation_fact: 1.0
 
+  Rscale_style: 2
+                   # 1 = tuple
+                   # 2 = use dict; different value for different proxy
+  # if Rscale_style == 1:
   # Scaling the global estimate of the proxy variance Rg
   # Tierney et al 2020, doi: 10.31223/osf.io/me5uj
   #Rscale: !!python/tuple [10.0, 2.0, 1.0, 0.5, 0.2, 0.1, 0.05, 0.01]
+  #Rscale: !!python/tuple [0.2, 0.1, 0.05, 0.01]
+  #Rscale: !!python/tuple [0.01]
   #Rscale: !!python/tuple [0.01]
   #Rscale: !!python/tuple [10.0, 1.0]
   #Rscale: !!python/tuple [0.7]
   #Rscale: !!python/tuple [1.0,0.5]
   Rscale: !!python/tuple [1.0]
   #Rscale: !!python/tuple [0.05]
+  # if Rscale_style == 2:
+  # based on the highest RMSE reduction & CE increase
+  Rscale_dict:
+      Rscale_d18o: 1.0
+      Rscale_mgca: 1.0
+      Rscale_tex:  0.5
+      Rscale_caco3: 1.0
 
   # Ensemble saving option, save full ensemble: True or False
   # MUST DO for verification
@@ -118,7 +137,9 @@ proxies:
   #proxy_frac: 1.00 = 100%, all proxy sites used; 0.50 = 50%, half proxy sites used
   #proxy_frac: !!python/tuple [0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0]
   #proxy_frac: !!python/tuple [0.7, 1.0]
-  proxy_frac: !!python/tuple [0.98]
+  #proxy_frac: !!python/tuple [0.98]
+  proxy_frac: !!python/tuple [0.95]
+  #proxy_frac: !!python/tuple [0.7]
   # ... feature not included ...
   proxy_timeseries_kind: asis
   # ... feature not included ...
@@ -143,7 +164,8 @@ proxies:
     #dbversion: 'petmproxy3slices_v0.0.18hiatus.csv'   # include multiple proxy data, help from Jess
     #dbversion: 'petmproxy3slices_v0.0.18hiatus2.csv'   # include multiple proxy data, help from Jess
     #dbversion: 'petmproxy3slices_v0.0.13.csv' 
-    dbversion: 'petmproxy3slices_v0.0.19.csv'   # include Elling 2019
+    #dbversion: 'petmproxy3slices_v0.0.19.csv'   # include Elling 2019
+    dbversion: 'petmproxy3slices_v0.0.20_w_deepmip.csv'   # merge with deepmip
     # ... feature not included ...
     dataformat_proxy: 'DF'
     # ... feature not included ...
@@ -221,10 +243,10 @@ proxies:
     #  'Marine sediments_mgca_pooled_red']
     
     ## TEX only
-    #proxy_blacklist: ['Marine sediments_d18o_pooled',
-    #  'Marine sediments_caco3',
-    #  'Marine sediments_mgca_pooled_bcp',
-    #  'Marine sediments_mgca_pooled_red']
+    proxy_blacklist: ['Marine sediments_d18o_pooled',
+      'Marine sediments_caco3',
+      'Marine sediments_mgca_pooled_bcp',
+      'Marine sediments_mgca_pooled_red']
     
     ## d18O only
     #proxy_blacklist: ['Marine sediments_tex86',
@@ -402,11 +424,11 @@ psm:
     #bottom water calcite saturation grid definition
     
     psm_required_nc_ohm: '/sedgem/fields_sedgem_2d.nc'    
-    water_saturation: 'bottom'
-    water_saturation_field: 'carb_ohm_cal'
+    #water_saturation: 'bottom'
+    #water_saturation_field: 'carb_ohm_cal'
     
-    #water_saturation: 'fixed'
-    #water_saturation_value: 5.0
+    water_saturation: 'fixed'
+    water_saturation_value: 5.0
     
     psm_required_nc_mg: '/biogem/fields_biogem_2d.nc'
     psm_baymag_ln: 'yes'  # yes = ln; no = normal
@@ -476,7 +498,8 @@ prior:
             'misc_pH',
             'carb_sur_ohm_cal',
             'ocn_ben_temp',
-            'sed_CaCO3'
+            'sed_CaCO3',
+            'ocn_sur_ALK'
             ]
         #fields_biogem_2d: [
         #    'ocn_sur_temp',
