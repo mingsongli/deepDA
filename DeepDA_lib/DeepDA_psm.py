@@ -500,7 +500,14 @@ def cal_ye_cgenie(yml_dict,proxies,j,Xb,proxy_assim2,proxy_psm_type,dum_lon_offs
                     prediction = bayspar.predict_tex_analog(prior_1grid, temptype = 'sst', search_tol = search_tol_i + 20, nens=nens_i)
                 except:
                     print('  bayspar Warning. search_tol may be too small. try a larger number + 30')
-                    prediction = bayspar.predict_tex_analog(prior_1grid, temptype = 'sst', search_tol = search_tol_i + 30, nens=nens_i)
+                    try:
+                        prediction = bayspar.predict_tex_analog(prior_1grid, temptype = 'sst', search_tol = search_tol_i + 30, nens=nens_i)
+                    except:
+                        print('  bayspar Warning. search_tol may be too small. try a larger number + 40')
+                    try:
+                        prediction = bayspar.predict_tex_analog(prior_1grid, temptype = 'sst', search_tol = search_tol_i + 40, nens=nens_i)
+                    except:
+                        prediction = bayspar.predict_tex_analog(np.array([25,25,25,25]), temptype = 'sst', search_tol = search_tol_i, nens=nens_i)
         Ye = np.mean(prediction.ensemble, axis = 1)
         
     elif proxy_psm_type_i in ['tex86h_forward']:
