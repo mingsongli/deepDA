@@ -20,7 +20,7 @@ log_level: 1
 
 MonteCarlo:
   # number: integer. 1 = single run;  >1 = monte carlo simulations
-  number: 100
+  number: 2
   multi_seed: [
       0,   1,   2,   3,   4,   5,   6,   7,   8,   9,  10,  11,  12,
      13,  14,  15,  16,  17,  18,  19,  20,  21,  22,  23,  24,  25,
@@ -59,7 +59,7 @@ core:
   #nexp: _petm29_v0.1.1_whiatus_deep_20220206_All.noAc._bays_MCsd100_pHcor_frac0.98_Ca75_biogem_SatuSurBen
   nexp: _petm29_v0.1_deep_20220206_All.noAc._bays_MCsd100_pHcor_frac0.98_Ca75_biogem_SatuSurBen
   nexp: _petm29_v0.1_deep_20220406_All.noAc._bays_MCsd100_pHcor_frac0.98_Ca75_biogem_SatuSurBen
-  nexp: _petm29_v0.1.1_whiatus_deep_20220406_All.noAc._bays_MCsd100_pHcor_frac0.98_Ca75_biogem_SatuSurBen
+  nexp: _petm29_v0.1.1_whiatus_deep_20220406_All.noAc._bays_MCsd100_pHcor_frac0.98_Ca75_biogem_SatuSurBen_2
   
   # project directory for input data
   

@@ -2,7 +2,7 @@ name: deepda
 
 channels:
   - defaults
-  - conga-forge
+  - conda-forge
 
 dependencies:
   - python=3.6
@@ -19,3 +19,4 @@ dependencies:
   - pytables=3.6.1
   - openpyxl=3.0.5
   - seaborn
+  - xarray=0.16.2

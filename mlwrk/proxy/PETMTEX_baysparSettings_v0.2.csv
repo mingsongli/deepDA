@@ -1,0 +1,18 @@
+﻿File,Site,Type,mean,std,tol,iters
+sluijs2006-acex302-4a.txt,302,TEX86,18,10,0.15,2500
+bijl2009-1172.txt,1172,TEX86,28,10,0.15,2500
+sluijs2011-odpsite1172.txt,1172,TEX86,28,10,0.15,2500
+sluijs2007-bassriver.txt,BR,TEX86,28,10,0.15,2500
+schoon2013-fursectionnorthsea.txt,fur,TEX86,20,10,0.15,2500
+Stokke2020-TEX-Fur,fur,TEX86,20,10,0.15,2500
+sluijs2014-harrellcore.txt,harrell,TEX86,28,10,0.15,2500
+frieling2017-ib10aofnigeria.txt,ib10a,TEX86,30,10,0.2,2500
+frieling2017-ib10bofnigeria.txt,ib10b,TEX86,30,10,0.2,2500
+frieling2017-sqofnigeriatex86.txt,sq,TEX86,30,10,0.2,2500
+schoon2013-storebaelt.txt,GreatBelt,TEX86,20,10,0.15,2500
+hollis2012-waiparatex-mgca-d18o.txt,waipara,TEX86,28,10,0.15,2500
+frieling2014-westsiberian.txt,Siberia,TEX86,18,10,0.15,2500
+zachos2006-wilsonlake.txt,WL,TEX86,28,10,0.15,2500
+"Frieling et al., 2019",959,TEX86,30,10,0.2,2500
+Smith et al. 2020,M0077,TEX86,30,10,0.2,2500
+"Elling et al., 2019",Ancora,TEX86,28,10,0.15,2500
