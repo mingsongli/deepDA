@@ -1,8 +1,13 @@
 """
 Updated Oct 31, 2020: add forward model for d18O, TEX86
+Updated May 6, add pH correction for d18O glassy forams
 
 By Mingsong Li
    Penn State
+Modified: pH correction
+    Mingsong Li
+    Peking University
+    May 2021
 
 Functions
     
@@ -22,8 +27,6 @@ Functions
     tex86_linear_forward
         forward model
         
-    tex86h
-    
     tex86h_forward
     
     mgca_anand03
@@ -62,6 +65,8 @@ Functions
     
     cal_ye_cgenie
     
+    cal_ye_cgenie_d18O
+    
     cal_ye_cgenie_mgca
     
     CE_NS70
@@ -71,6 +76,7 @@ Functions
 """
 import numpy as np
 from DeepDA_lib import modules_nc
+import os
 
 #try:
 #    import bayspline
@@ -86,6 +92,7 @@ except ImportError as e3:
     print('Warning:', e3)
 try:
     import baymag
+    import baymag.omgph
 except ImportError as e4:
     print('Warning:', e4)
 
@@ -406,7 +413,7 @@ def proxy_frac_4da_eval(proxy_select,proxy_frac,log_level):
 # calculate Ye for cGENIE prior
 def cal_ye_cgenie(yml_dict,proxies,j,Xb,proxy_assim2,proxy_psm_type,dum_lon_offset,dum_imax,dum_jmax):
     '''
-    calculate ye for d18o and TEX86
+    calculate ye for caco3 and TEX86 (and d18o w/o pH correction, zeebe 2001)
     INPUT:
     
     proxies: proxy dataframe
@@ -463,7 +470,126 @@ def cal_ye_cgenie(yml_dict,proxies,j,Xb,proxy_assim2,proxy_psm_type,dum_lon_offs
         psm_required_variable_key_index = 0
     
     lonlat = modules_nc.cal_find_ij(dum_lon,dum_lat,dum_lon_offset,dum_imax,dum_jmax) 
+    dir_prior = yml_dict['core']['prior_dir']
+    dir_prior_full = os.listdir(dir_prior)
+    prior_len = len(dir_prior_full)
+    ######################## TO DO: adjusted to include CaCO3, d13C or other proxies ##############
+    # find 1d grid location
+    if Xb.shape[0] == dum_imax * dum_jmax:
+        # if size of Xb is dum_imax x dum_jmax x nens, lonlati should be <= dum_imax * dum_jmax
+        lonlati = lonlat[1] * dum_jmax + lonlat[0]
+    else:
+        # if size of Xb is varn x dum_imax x dum_jmax x nens, lonlati should be dum_imax * dum_jmax + varn*dum_imax x dum_jmax
+        lonlati = lonlat[1] * dum_jmax + lonlat[0] + psm_required_variable_key_index * dum_imax * dum_jmax
     
+    # read prior
+    prior_1grid = np.copy(Xb[lonlati,:])   # prior
+    
+    ######################## TO DO: add fit to 3d var list ##############
+    
+    # Now PSM type has been found. Let's cal Ye
+    if proxy_psm_type_i in ['bayesreg_tex86']:
+        # bayspar
+        search_tol_i = yml_dict['psm']['bayesreg_tex86']['search_tol']
+        nens_i = yml_dict['psm']['bayesreg_tex86']['nens']
+        try:
+            prediction = bayspar.predict_tex_analog(prior_1grid, temptype = 'sst', search_tol = search_tol_i, nens=nens_i)
+        except:
+            print('  bayspar Warning. search_tol may be too small. try a larger number + 10')
+            try:
+                prediction = bayspar.predict_tex_analog(prior_1grid, temptype = 'sst', search_tol = search_tol_i + 10, nens=nens_i)
+            except:
+                print('  bayspar Warning. search_tol may be too small. try a larger number + 20')
+                try:
+                    prediction = bayspar.predict_tex_analog(prior_1grid, temptype = 'sst', search_tol = search_tol_i + 20, nens=nens_i)
+                except:
+                    print('  bayspar Warning. search_tol may be too small. try a larger number + 30')
+                    try:
+                        prediction = bayspar.predict_tex_analog(prior_1grid, temptype = 'sst', search_tol = search_tol_i + 30, nens=nens_i)
+                    except:
+                        print('  bayspar Warning. search_tol may be too small. try a larger number + 40')
+                    try:
+                        prediction = bayspar.predict_tex_analog(prior_1grid, temptype = 'sst', search_tol = search_tol_i + 40, nens=nens_i)
+                    except:
+                        print('  bayspar Warning. search_tol is too small. Use 25 degree SST and the set search_tol.')
+                        prediction = bayspar.predict_tex_analog(np.full((prior_len),25), temptype = 'sst', search_tol = search_tol_i, nens=nens_i)
+        Ye = np.mean(prediction.ensemble, axis = 1)
+        
+    elif proxy_psm_type_i in ['tex86h_forward']:
+        Ye = tex86h_forward(prior_1grid)
+        
+    elif proxy_psm_type_i in ['cgenie_caco3']:
+        Ye = np.copy(prior_1grid)
+        
+    elif proxy_psm_type_i in ['cgenie_caco3_13c']:
+        Ye = np.copy(prior_1grid)
+        
+    return Ye
+
+# calculate Ye for cGENIE prior using pH correction
+def cal_ye_cgenie_d18O(yml_dict,proxies,j,Xb,Xb_sal,Xb_ph,proxy_assim2,proxy_psm_type,dum_lon_offset,dum_imax,dum_jmax):
+    '''
+    calculate ye for d18o w pH correction following Zeebe (2001)
+    INPUT:
+    
+    proxies: proxy dataframe
+    j: index of selected proxy
+    Xb: prior, background state
+    
+    OUTPUT:
+        precalculated ye
+    '''
+    log_level = yml_dict['log_level']
+    # read lon lat for each line of proxy
+    lon_label = yml_dict['proxies'][yml_dict['proxies']['use_from'][0]]['lon_label']
+    lat_label = yml_dict['proxies'][yml_dict['proxies']['use_from'][0]]['lat_label']
+    dum_lat = proxies[lat_label][j]  # (paleo)latitude of this site
+    dum_lon = proxies[lon_label][j]  # (paleo)longitude of this site
+    Filei = proxies['File'][j]
+    # Read proxy type from the database
+    data_psm_type = proxies['Proxy'][j]
+    # Read allowed proxy from the DTDA-config.yml
+    data_psm_type_find = 0
+    for key, value in proxy_assim2.items():
+        if data_psm_type in proxy_assim2[key]:
+            data_psm_type_find = data_psm_type_find + 1
+    if data_psm_type_find == 1:
+        for key, value in proxy_psm_type.items():
+            if data_psm_type in proxy_assim2[key]:
+                data_psm_key = key
+        proxy_psm_type_i = proxy_psm_type[data_psm_key]
+    
+    ###### Read Prior dic ####
+    # save prior variable list
+    prior_variable_dict = []  # variable list
+    prior_nc_file_list = []  # nc file list
+    prior_variable_dict_3d = []  # variable list
+    prior_nc_file_list_3d = []  # nc file list
+    prior_source = yml_dict['prior']['prior_source'] #
+    prior_state_variable = yml_dict['prior'][prior_source]['state_variable']  # note: ['2d': xxx; '3d': xxx]
+    for key, value in prior_state_variable.items():
+        nc_keyvalue = prior_state_variable[key]['ncname']  # note: 2d dict
+        #print('      nc_keyvalue {}...'.format(nc_keyvalue))
+        for key1, value1 in nc_keyvalue.items():
+            #print('      {}: {}'.format(key1,value1))
+            for i in range(len(prior_state_variable[key][value1])):
+                if key in ['2d']:
+                    prior_variable_dict.append(prior_state_variable[key][value1][i])
+                    #prior_nc_file_list.append(key1+'/'+value1+'.nc')
+                elif key in ['3d']:
+                    prior_variable_dict_3d.append(prior_state_variable[key][value1][i])
+                    #prior_nc_file_list_3d.append(key1+'/'+value1+'.nc')
+                
+    psm_required_variable_key = list(yml_dict['psm'][proxy_psm_type_i]['psm_required_variables'].keys())[0]
+    if psm_required_variable_key in prior_variable_dict:
+        psm_required_variable_key_index = prior_variable_dict.index(psm_required_variable_key)
+    else:
+        psm_required_variable_key_index = 0
+    
+    lonlat = modules_nc.cal_find_ij(dum_lon,dum_lat,dum_lon_offset,dum_imax,dum_jmax) 
+    dir_prior = yml_dict['core']['prior_dir']
+    dir_prior_full = os.listdir(dir_prior)
+    prior_len = len(dir_prior_full)
     ######################## TO DO: adjusted to include CaCO3, d13C or other proxies ##############
     # find 1d grid location
     if Xb.shape[0] == dum_imax * dum_jmax:
@@ -476,6 +602,12 @@ def cal_ye_cgenie(yml_dict,proxies,j,Xb,proxy_assim2,proxy_psm_type,dum_lon_offs
     #lonlati = lonlat[1] * dum_jmax + lonlat[0]
     # read prior
     prior_1grid = np.copy(Xb[lonlati,:])   # prior
+    
+    # fetch modern pH
+    try:
+        d18o_phcor_water = yml_dict['psm']['bayesreg_d18o_pooled']['d18o_phcor_water']
+    except:
+        d18o_phcor_water = 'deeptime'
     ######################## TO DO: add fit to 3d var list ##############
     
     # Now PSM type has been found. Let's cal Ye
@@ -484,13 +616,25 @@ def cal_ye_cgenie(yml_dict,proxies,j,Xb,proxy_assim2,proxy_psm_type,dum_lon_offs
         d18osw_local_choice = yml_dict['psm']['bayesreg_d18o_pooled']['d18osw_local_choice']
         d18osw_icesm_pco2 = yml_dict['psm']['bayesreg_d18o_pooled']['d18osw_icesm_pco2']
         
+        salinity_i = np.copy(Xb_sal[lonlati,:])
+        
+        if d18o_phcor_water in ['modern']:
+            latlon_j = (dum_lat, dum_lon)
+            ph_i = baymag.omgph.fetch_ph(latlon=latlon_j)
+            if log_level > 4:
+                print('  bayesreg_d18o_pooled uses modern pH')
+        else:
+            ph_i       = np.mean(np.copy(Xb_ph[lonlati,:]))
+            
+        type_i = 1
+        
         if d18osw_local_choice in ['zachos94']:
             # d18o_localsw using method by Zachos et al., 1994 PALEOCEANOGRAPHY
             #d18o_localsw = DeepDA_psm.d18o_localsw(abs(dum_lat))
             x = abs(dum_lat)
             #d18o_localsw = 0.576 + 0.041 * x - 0.0017 * x ** 2 + 1.35e-5 * x ** 3
-            d18o_localsw = d18o_localsw(x)
-            prediction_d18O = bayfox.predict_d18oc(prior_1grid,d18o_localsw + psm_d18osw_adjust) # pool model for bayfox
+            d18o_localsw = d18o_localsw(x) + psm_d18osw_adjust
+            
         else:
             if d18osw_icesm_pco2 == 1.0:
                 proxy_col_d18osw = 'd18osw_1x'
@@ -501,14 +645,26 @@ def cal_ye_cgenie(yml_dict,proxies,j,Xb,proxy_assim2,proxy_psm_type,dum_lon_offs
             else:
                 proxy_col_d18osw = 'd18osw_3x'
             d18o_localsw = proxies[proxy_col_d18osw][j]
-            prediction_d18O = bayfox.predict_d18oc(prior_1grid,d18o_localsw) # pool model for bayfox
+            
+        prediction_d18O_raw = bayfox.predict_d18oc(prior_1grid,d18o_localsw) # pool model for bayfox
+        
+        prediction_d18O     = bayfox.pHCorrect(prediction_d18O_raw.ensemble,prior_1grid,salinity_i,ph_i,type_i)
         
         Ye = np.mean(prediction_d18O.ensemble, axis = 1)
         
+        #print('d18o correction: Ye shape is {}, mean is {}'.format(Ye.shape, np.mean(Ye)))
+        
     elif proxy_psm_type_i in ['deepmip_d18o']:
+        
         psm_d18osw_adjust = yml_dict['psm']['deepmip_d18o']['psm_d18osw_adjust']
         d18osw_local_choice = yml_dict['psm']['deepmip_d18o']['d18osw_local_choice']
         d18osw_icesm_pco2 = yml_dict['psm']['deepmip_d18o']['d18osw_icesm_pco2']
+        
+        # read pH for d18o correction following Zeebe (2001)
+        ph          =  np.copy(Xb_ph[lonlati,:])
+        d18o_cor = -1.42 * (ph - 8.1)
+        #print('d18o correction: ph shape is {}, mean is {}, cor factor = {}'.format(ph.shape, np.mean(ph), d18o_cor))
+    
         if d18osw_local_choice in ['zachos94']:
             x = abs(dum_lat)
             d18o_localsw = d18o_localsw(x)
@@ -523,38 +679,30 @@ def cal_ye_cgenie(yml_dict,proxies,j,Xb,proxy_assim2,proxy_psm_type,dum_lon_offs
             else:
                 proxy_col_d18osw = 'd18osw_3x'
             d18o_localsw = proxies[proxy_col_d18osw][j]
-            Ye = d18oc_linear_forward(prior_1grid,d18o_localsw)
-    
-    elif proxy_psm_type_i in ['bayesreg_tex86']:
-        # bayspar
-        search_tol_i = yml_dict['psm']['bayesreg_tex86']['search_tol']
-        nens_i = yml_dict['psm']['bayesreg_tex86']['nens']
-        try:
-            prediction = bayspar.predict_tex_analog(prior_1grid, temptype = 'sst', search_tol = search_tol_i, nens=nens_i)
-        except:
-            print('  Warning. search_tol may be too small. try a larger number + 10')
-            prediction = bayspar.predict_tex_analog(prior_1grid, temptype = 'sst', search_tol = search_tol_i + 10, nens=nens_i)
-        Ye = np.mean(prediction.ensemble, axis = 1)
+            Ye = d18oc_linear_forward(prior_1grid,d18o_localsw) + d18o_cor
         
-    elif proxy_psm_type_i in ['tex86h_forward']:
-        Ye = tex86h_forward(prior_1grid)
-        
-    elif proxy_psm_type_i in ['cgenie_caco3']:
-        Ye = np.copy(prior_1grid)
-        
-    elif proxy_psm_type_i in ['cgenie_caco3_13c']:
-        Ye = np.copy(prior_1grid)
-        
-    return Ye
-
+    return Ye 
 
 # calculate Ye for cGENIE prior
 def cal_ye_cgenie_mgca(yml_dict,proxies,j,Xb,proxy_psm_type_i,dum_lon_offset,dum_imax,dum_jmax,Xb_sal,Xb_ph,Xb_omega,geologic_age):
     '''
     INPUT:
+        yml_dict         : loaded yml conf. file
+        proxies          : a dataframe - proxy database file
+        j                : index of the target proxy
+        Xb               : matrix, background/prior SST
+        proxy_psm_type_i : proxy type
+        dum_lon_offset   : prior longitude offset
+        dum_imax         : number of cgenie grid
+        dum_jmax         : number of cgenie grid
+        Xb_sal           : matrix, backgroud/prior salinity
+        Xb_ph            : matrix, backgroud/prior pH
+        Xb_omega         : matrix, backgroud/prior omega
+        geologic_age     : number, geologic age, for omega correction
     OUTPUT:
         calculated ye
     '''
+    log_level = yml_dict['log_level']
     proxy_assim2      = yml_dict['proxies'][yml_dict['proxies']['use_from'][0]]['proxy_assim2']
     # read lon lat for each line of proxy
     lon_label = yml_dict['proxies'][yml_dict['proxies']['use_from'][0]]['lon_label']
@@ -598,6 +746,10 @@ def cal_ye_cgenie_mgca(yml_dict,proxies,j,Xb,proxy_psm_type_i,dum_lon_offset,dum
     cleaningr = np.tile(np.array([1]),prior_len)
     cleaningb = np.tile(np.array([0]),prior_len)
     lonlat = modules_nc.cal_find_ij(dum_lon,dum_lat,dum_lon_offset,dum_imax,dum_jmax) 
+    dir_prior = yml_dict['core']['prior_dir']
+    dir_prior_full = os.listdir(dir_prior)
+    prior_len = len(dir_prior_full)
+    water_saturation    = yml_dict['psm']['bayesreg_mgca_pooled_red']['water_saturation']
     ######################## TO DO: adjusted to include d13C or other proxies ##############
     
     psm_required_variable_key = list(yml_dict['psm'][proxy_psm_type_i]['psm_required_variables'].keys())[0]
@@ -615,21 +767,49 @@ def cal_ye_cgenie_mgca(yml_dict,proxies,j,Xb,proxy_psm_type_i,dum_lon_offset,dum
 
     salinity =  np.copy(Xb_sal[lonlati,:])
     ph       =  np.copy(Xb_ph[lonlati,:])
+    
     if proxy_psm_type_i in ['bayesreg_mgca_pooled_red', 'bayesreg_mgca_pooled_bcp']:
+        
+        psm_baymag_ln =  yml_dict['psm']['bayesreg_mgca_pooled_red']['psm_baymag_ln']
+        
         if proxy_psm_type_i in ['bayesreg_mgca_pooled_red']:
             clearning_one = cleaningr
             proxy_explain = 'reductive'
         elif proxy_psm_type_i in ['bayesreg_mgca_pooled_bcp']:
             clearning_one = cleaningb
             proxy_explain = 'barker'
-        omega    =  np.copy(Xb_omega[lonlati,:])
-        prediction_mgca = baymag.predict_mgca(prior_1grid, clearning_one, salinity, ph, omega, spp) # pool model for baymag reductive
-        pred_mgca_adj = baymag.sw_correction(prediction_mgca, np.array([geologic_age]))
+        
+        if water_saturation in ['modern']:
+            
+            latlon_i = (dum_lat, dum_lon)
+            ph_i = baymag.omgph.fetch_ph(latlon=latlon_i)
+            depth_i = proxies['Depth'][j]
+            omg_i = baymag.omgph.fetch_omega(latlon=latlon_i, depth=depth_i)
+
+            ph       = np.full((prior_len,),ph_i)
+            omega    = np.full((prior_len,),omg_i)
+            
+            if log_level > 4:
+                print('  bayesreg_mgca_pooled uses modern pH and omega')
+                
+        else:
+            omega    =  np.copy(Xb_omega[lonlati,:])
+        
+        if psm_baymag_ln in ['no']:
+            prediction_mgca = baymag.predict_mgca(prior_1grid, clearning_one, salinity, ph, omega, spp) # pool model for baymag reductive
+            pred_mgca_adj = baymag.sw_correction(prediction_mgca, np.array([geologic_age]))
+            
+        if psm_baymag_ln in ['yes']:
+            pred_mgca_adj = baymag.predict_mgca_ln_dt(geologic_age,prior_1grid, clearning_one, salinity, ph, omega, spp) # 
+            
         Ye = np.mean(pred_mgca_adj.ensemble, axis = 1)
+        
     else:
+        
         mgcasw = yml_dict['psm'][proxy_psm_type_i]['mgcasw']
         mgcacorr = mgca_evans18_forward(prior_1grid,ph,mgcasw)
         Ye = mgca_sal_corr_forward(mgcacorr,salinity)
+        
     return Ye
 
 def CE_NS70(data, model, axis):
@@ -650,9 +830,11 @@ def CE_NS70(data, model, axis):
     numer = np.nansum( np.power(difference,2), axis = 0 )
     denom = np.nansum( np.power(data - np.nanmean(data, axis=0), 2), axis = 0 )
     CE = 1. - np.divide(numer, denom)
-        
     
     return CE
+
+
+# adjusted root-mean-square-error
 
 def rmse(predictions, targets):
     return np.sqrt(np.nanmean((predictions - targets) ** 2))

@@ -1,0 +1,21 @@
+name: deepda
+
+channels:
+  - defaults
+  - conga-forge
+
+dependencies:
+  - python=3.6
+  - jupyterlab
+  - numpy
+  - h5py
+  - time
+  - pyyaml
+  - pandas
+  - scipy
+  - matplotlib=3.2
+  - netCDF4
+  - cartopy
+  - pytables=3.6.1
+  - openpyxl=3.0.5
+  - seaborn
