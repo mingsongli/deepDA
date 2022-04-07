@@ -34,7 +34,7 @@
 > 
 > Main function. 
 > 
-> Users have to adjust the code for their own project.
+> Users have to adjust the code for their own projects.
 
 ### DeepDA_lib/
 * **DeepDA_psm.py**
@@ -114,16 +114,16 @@
 	
 * ReadDASummaryXlsxPlot-prePETM_SST.ipynb
 
-> 	Read wrk folder for writing `*.summary.xlsx`; extract warming and cooling data for all variables
+> 	Read `wrk`/ folder for writing `*.summary.xlsx`; extract warming and cooling data for all variables
 
 * ReadDASummaryXlsxPlot-SST.ipynb
 
-> 	Read wrk folder for writing `*.summary.xlsx`; extract warming and cooling data for all variables 
+> 	Read `wrk`/ folder for writing `*.summary.xlsx`; extract warming and cooling data for all variables 
 
 
 * ReadDASummaryXlsxPlot.ipynb
 
-> 	Read wrk folder for writing `*.summary.xlsx`; extract warming and cooling data for all variables 
+> 	Read `wrk`/ folder for writing `*.summary.xlsx`; extract warming and cooling data for all variables 
 
 
     
@@ -154,24 +154,24 @@
 ### Directory
 
 	../../ML.petm/
-					ML.petm029.ID.1/    # folder, exp 1
-					ML.petm029.ID.2/    # folder, exp 2
-					ML.petm029.ID.3/    # folder, exp 3
-					...
-					ML.petm029.ID.n/    # folder, exp n
+				ML.petm029.ID.1/    # folder, exp 1
+				ML.petm029.ID.2/    # folder, exp 2
+				ML.petm029.ID.3/    # folder, exp 3
+				...
+				ML.petm029.ID.n/    # folder, exp n
                  
 Each folder of experiment:
 
 	ML.petm029.ID.1/
-					archive/
-					atchem/
-					biogem/
-					ecogem/
-					...
-					rokgem/
-					sedgem/
+				archive/
+				atchem/
+				biogem/
+				ecogem/
+				...
+				rokgem/
+				sedgem/
 					
-See [cGENIE.muffin Earth system model](https://www.seao2.info/mycgenie.html) for the structure of cGENIE
+See [cGENIE.muffin Earth system model](https://www.seao2.info/mycgenie.html) for the structure of cGENIE model.
 
 	
 ---
@@ -200,56 +200,77 @@ See [cGENIE.muffin Earth system model](https://www.seao2.info/mycgenie.html) for
 
     cd misc
 
-#### Environement
+### 3. Setup environement
 
-Install packages using environment.yml file:
+#### Install packages using `deepda_pyenv.yml` environment file:
 
     conda env update --file deepda_pyenv.yml
 
-#### Clone PSMs: baysparpy, bayfox & baymagpy
+#### Install PSMs: BAYSPAR, BAYFOX & BAYMAG
+
+##### Clone
+
     cd ../..
     git clone https://github.com/mingsongli/bayfox.git
     git clone https://github.com/mingsongli/baysparpy.git
     git clone https://github.com/mingsongli/BAYMAG.git
 
-Go to each package, install the package from local directory
+> I did some corrections/adjustments for the DA project. The original code may not work as expected.
+
+##### Install
+
+Go to each package, install the package from the local directory
+
+###### BAYSPAR
 
     cd baysparpy
     python setup.py install
 
+###### BAYFOX
+
     cd ../bayfox
     python setup.py install
-
+    
+###### BAYMAG
+    
     cd ../baymagpy
     python setup.py install
     
  Read more [python setup.py](https://stackoverflow.com/questions/19048732/python-setup-py-develop-vs-install)
 
-#### Run DA
+### 4. DA configuration
 
-Go the deepDA folder
+Go to the `deepDA` folder
 
     cd ../deepDA
 
-Run jupyterlab
+Run `jupyterlab`
 
-    Jupyter lab
+    jupyter lab
 
 Revise settings in the **`DeepDA_config.yml`** accordingly
 
-Double click **`DeepDA_config.yml`** to revise settings
+Double click **`DeepDA_config.yml`** to revise the settings.
 
 Double click **`DeepDA_allMC.ipynb`** to open the notebook.
 
 *May need to adjust the code for their own project*
 
+### 5. Reconstruction
+
+Click the triangle to run the notebook.
+
+The DA output will be saved in the user-defined directory.
+
 Good luck!
+
+---
 
 ## Reminder
 
-#### If the above steps do not work, you should:
+### If the above steps do not work, you may want to:
 
-### 1. ensure that all required python packages have been installed.
+#### 1. ensure that all required python packages have been installed.
 
  See
  
@@ -257,23 +278,19 @@ Good luck!
  	
  	/misc/lmr_py3EnvCondaList.docx
 
-###  2. Revise settings in the `DeepDA_config.yml` accordingly
+####  2. Revise settings in the `DeepDA_config.yml` accordingly
 
 May need to adjust the code for your own project.
 
-###  3. If the prior lacking required fileds, rerun the simulation to update the prior. 
+####  3. If the prior lacks required fields, rerun the simulation to update the prior. 
 
-The code entilted 
+The code entitled
 
 	correct_xxx.ipynb
 	
-within the 'utils/' folder may be helpful for some minor corrections.
-
-###  3. Run `DeepDA_allMC.ipynb`
-
-The DA output will be saved in the user-defined directory.
+within the `utils/` folder may be helpful for some minor corrections.
 
 
-#### Useful sources
+## Useful resource
 
 [LMR project](https://atmos.washington.edu/~hakim/lmr/docs/index.html)
