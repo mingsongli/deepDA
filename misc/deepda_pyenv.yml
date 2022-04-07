@@ -1,8 +1,8 @@
-name: deepda
+name: deep
 
 channels:
   - defaults
-  - conga-forge
+  - conda-forge
 
 dependencies:
   - python=3.6
