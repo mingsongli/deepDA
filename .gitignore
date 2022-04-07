@@ -7,7 +7,9 @@
 .ipynb_checkpoints/
 
 # working folder
-mlwrk/
+mlwrk/archive
+mlwrk/mgcapsm
+mlwrk/wrk
 backup/
 src/
 #verification/
