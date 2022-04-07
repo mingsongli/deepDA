@@ -58,6 +58,8 @@ core:
   #nexp: _petm29_v0.1.1_whiatus_deep_20220206_All.noAc._bays_MCsd100_pHcor_frac0.98_Ca75_biogem_Saturation
   #nexp: _petm29_v0.1.1_whiatus_deep_20220206_All.noAc._bays_MCsd100_pHcor_frac0.98_Ca75_biogem_SatuSurBen
   nexp: _petm29_v0.1_deep_20220206_All.noAc._bays_MCsd100_pHcor_frac0.98_Ca75_biogem_SatuSurBen
+  nexp: _petm29_v0.1_deep_20220406_All.noAc._bays_MCsd100_pHcor_frac0.98_Ca75_biogem_SatuSurBen
+  nexp: _petm29_v0.1.1_whiatus_deep_20220406_All.noAc._bays_MCsd100_pHcor_frac0.98_Ca75_biogem_SatuSurBen
   
   # project directory for input data
   
@@ -114,33 +116,34 @@ core:
   # 2 = use dictionary; use different values for different proxies
   Rscale_style: 1
   
-  if Rscale_style == 1:
-      # Scaling the global estimate of the proxy variance Rg
-      # Tierney et al 2020, doi: 10.31223/osf.io/me5uj
-      #Rscale: !!python/tuple [100.0, 50.0, 10.0, 5.0, 2.0, 1.0, 0.75, 0.5, 0.2, 0.1, 0.05, 0.01]
-      #Rscale: !!python/tuple [100, 50.0, 20.0, 15.0, 10.0, 5.0, 2.0, 1.0, 0.5, 0.2, 0.1, 0.05, 0.01]
-      #Rscale: !!python/tuple [100, 50.0, 20.0, 10.0, 5.0, 2.0, 1.0, 0.5, 0.2, 0.1, 0.05, 0.01]
-      #Rscale: !!python/tuple [10000.0,5000.0,1000.0,800.0,500.0,400.0,300.0,200.0,150.0,100.0,75.0,50.0, 20.0, 15.0, 10.0, 5.0, 2.0, 1.0, 0.5, 0.2, 0.1]
-      #Rscale: !!python/tuple [10000.0,5000.0,1000.0,800.0,500.0,400.0,300.0,200.0,150.0,100.0,75.0,50.0, 20.0, 15.0, 10.0, 5.0, 2.0, 1.0, 0.5, 0.2, 0.1, 0.05, 0.01]
-      #Rscale: !!python/tuple [0.05, 0.01]
-      #Rscale: !!python/tuple [0.01]
-      Rscale: !!python/tuple [2.0]
-      #Rscale: !!python/tuple [10.0, 1.0]
-      #Rscale: !!python/tuple [0.75]
-      #Rscale: !!python/tuple [1.0,0.5]
-      #Rscale: !!python/tuple [150.0]
-      #Rscale: !!python/tuple [0.05]
-  if Rscale_style == 2:
-      # based on the highest RMSE reduction & CE increase
-      Rscale_dict:
-          Rscale_d18o: 1.0
-          Rscale_mgca: 1.0
-          Rscale_tex:  0.5
-          Rscale_caco3: 1.0
+  # if Rscale_style == 1:
+  # Scaling the global estimate of the proxy variance Rg
+  # Tierney et al 2020, doi: 10.31223/osf.io/me5uj
+  #Rscale: !!python/tuple [100.0, 50.0, 10.0, 5.0, 2.0, 1.0, 0.75, 0.5, 0.2, 0.1, 0.05, 0.01]
+  #Rscale: !!python/tuple [100, 50.0, 20.0, 15.0, 10.0, 5.0, 2.0, 1.0, 0.5, 0.2, 0.1, 0.05, 0.01]
+  #Rscale: !!python/tuple [100, 50.0, 20.0, 10.0, 5.0, 2.0, 1.0, 0.5, 0.2, 0.1, 0.05, 0.01]
+  #Rscale: !!python/tuple [10000.0,5000.0,1000.0,800.0,500.0,400.0,300.0,200.0,150.0,100.0,75.0,50.0, 20.0, 15.0, 10.0, 5.0, 2.0, 1.0, 0.5, 0.2, 0.1]
+  #Rscale: !!python/tuple [10000.0,5000.0,1000.0,800.0,500.0,400.0,300.0,200.0,150.0,100.0,75.0,50.0, 20.0, 15.0, 10.0, 5.0, 2.0, 1.0, 0.5, 0.2, 0.1, 0.05, 0.01]
+  #Rscale: !!python/tuple [0.05, 0.01]
+  #Rscale: !!python/tuple [0.01]
+  Rscale: !!python/tuple [2.0]
+  #Rscale: !!python/tuple [10.0, 1.0]
+  #Rscale: !!python/tuple [0.75]
+  #Rscale: !!python/tuple [1.0,0.5]
+  #Rscale: !!python/tuple [150.0]
+  #Rscale: !!python/tuple [0.05]
+  #  if Rscale_style == 2:
+  # based on the highest RMSE reduction & CE increase
+  Rscale_dict:
+      Rscale_d18o: 1.0
+      Rscale_mgca: 1.0
+      Rscale_tex:  0.5
+      Rscale_caco3: 1.0
 
   # Ensemble saving option, save full ensemble: True or False
   # MUST DO for verification
   save_ens_full: True
+  save_mc_full: False
   
   # Ensemble archiving options: ens_full, ens_variance, ens_percentiles, ens_subsample
   #save_archive: ens_variance
@@ -189,8 +192,8 @@ proxies:
   NCDCdadt:
   
   petm3slices:
-    dbversion: 'petmproxy3slices_v0.1.csv'   # merge with deepmip
-    #dbversion: 'petmproxy3slices_v0.1.1-w-hiatus.csv'   # merge with deepmip
+    #dbversion: 'petmproxy3slices_v0.1.csv'   # merge with deepmip
+    dbversion: 'petmproxy3slices_v0.1.1-w-hiatus.csv'   # merge with deepmip
     
     # ... feature not included ...
     dataformat_proxy: 'DF'

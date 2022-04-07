@@ -1,10 +1,16 @@
-## DeepDA
+# DeepDA
 
 ---
-`DeepDA is a data assimilation framework for deep time paleoclimate project`
+`DeepDA is a data assimilation framework for deep time paleoclimate project.`
 
-### Highlights
->
+
+Contact: Mingsong Li
+         Peking University
+
+Email: msli{at}pku.edu.cn
+
+## Highlights
+> 
 ## Structure
 
 - DeepDA_config.yml    # Configuration parameters for running a data assimilation reconstruction using cGENIE priors.
@@ -58,8 +64,23 @@
                                           
                                           
 
-### How to run
-#####  0. Ensure that all packages have been installed.
-#####  1. Revise settings in the DeepDA_config.yml
-#####  2. If prior lacking field, try correc_xxx.ipynb within the 'utils' folder
-#####  3. Run DeepDA_allMC.ipynb
+## How to run
+
+###  0. Ensure that all python packages have been installed.
+        See /misc/deepda_pyenv.yml  & /misc/lmr_py3EnvCondaList.docx
+###  1. Revise settings in the DeepDA_config.yml accordingly
+        May need to adjust the code for their own project
+###  2. If the prior lacking required fileds, rerun the simulation to update the prior. 
+        The code entilted correc_xxx.ipynb within the 'utils' folder may be helpful for some minor corrections.
+###  3. Run DeepDA_allMC.ipynb
+        The DA output will be saved at the user-defined directory
+        
+## Data
+
+
+
+#### Useful sources:
+
+    https://atmos.washington.edu/~hakim/lmr/docs/index.html
+    
+    
