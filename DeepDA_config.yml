@@ -20,7 +20,7 @@ log_level: 1
 
 MonteCarlo:
   # number: integer. 1 = single run;  >1 = monte carlo simulations
-  number: 100
+  number: 50
   multi_seed: [
       0,   1,   2,   3,   4,   5,   6,   7,   8,   9,  10,  11,  12,
      13,  14,  15,  16,  17,  18,  19,  20,  21,  22,  23,  24,  25,
@@ -85,6 +85,32 @@ core:
   nexp: _petm31_v0.1.2whiatus_deep_20220726_All.noAc._bays_MC100_pHcor_frac0.98_Ca75_biogem_SatuBen_setLim
   nexp: _petm31_v0.1.2_deep_20220726_noCaCO3.noAc._bays_MC100_pHcor_frac0.95_Ca75_biogem_SatuModern_setLim
   nexp: _petm31_v0.1.2_deep_20220726_noCaCO3.noAc._bays_MC100_pHcor_frac0.95_Ca75_biogem_SatuBen_setLim
+  ## Dec 2022
+  
+  nexp: _petm31_v0.1.2_deep_20221209_All.noAc._bays_MC100_pHcor_frac0.98_Ca75_biogem_Satu5_setLim
+  nexp: _petm31_v0.1.2_deep_20221209_All.noAc._bays_MC100_pHcor_frac0.98_Ca75_biogem_SatuModern_setLim
+  nexp: _petm31_v0.1.2_deep_20221209_All.wAc._bays_MC100_pHcor_frac0.98_Ca75_biogem_SatuBen_setLim
+  nexp: _petm31_v0.1.2_whiatus_deep_20221209_All.noAc._bays_MC100_pHcor_frac0.98_Ca75_biogem_SatuBen_setLim
+  nexp: _petm31_v0.1.2_deep_20221209_noCaCO3.noAc._bays_MC100_pHcor_frac0.95_Ca75_biogem_SatuBen_setLim
+  nexp: _petm31_v0.1.2_deep_20221209_noCaCO3.noAc._bays_MC100_pHcor_frac0.95_Ca75_biogem_SatuModern_setLim
+  nexp: _petm31_v0.1.2_deep_20221209_nod18O.noAc._bays_MC100_pHcor_frac0.98_Ca75_biogem_SatuBen_setLim
+  nexp: _petm31_v0.1.2_deep_20221209_noMgCa.noAc._bays_MC100_pHcor_frac0.98_Ca75_biogem_SatuBen_setLim
+  nexp: _petm31_v0.1.2_deep_20221209_noTEX.noAc._bays_MC100_pHcor_frac0.98_Ca75_biogem_SatuBen_setLim
+  nexp: _petm31_v0.1.2_deep_20221209_CaCO3._bays_MC100_pHcor_frac0.95_Ca75_biogem_SatuBen_setLim
+  nexp: _petm31_v0.1.2_deep_20221209_d18O._bays_MC100_pHcor_frac0.8_Ca75_biogem_SatuBen_setLim
+  nexp: _petm31_v0.1.2_deep_20221209_mgca._bays_MC100_pHcor_frac0.8_Ca75_biogem_SatuBen_setLim
+  nexp: _petm31_v0.1.2_deep_20221209_mgca._bays_MC100_pHcor_frac0.8_Ca75_biogem_Satu5_setLim
+  nexp: _petm31_v0.1.2_deep_20221209_mgca._bays_MC100_pHcor_frac0.8_Ca75_biogem_SatuModern_setLim
+  nexp: _petm31_v0.1.2_deep_20221209_TEX._bays_MC100_pHcor_frac0.9_Ca75_biogem_SatuBen_setLim
+  nexp: _petm31_v0.1.2_deep_20221209_All.noAc._DeepMIP_MC100_pHcor_frac0.98_Ca75_biogem_SatuBen_setLim
+  nexp: _petm31_v0.1.2_deep_20221209_All.noAc._bays_MC100_pHcor_frac0.98_Ca75_biogem_SatuBen_setLim
+  nexp: _petm31_v0.1.2_deep_20221209_CaCO3._bays_MC100_pHcor_frac0.95_Ca75_biogem_SatuModern_setLim
+  nexp: _petm31_v0.1.2_deep_20230101_All.noAc._bays_MC100_pHcor_frac0.98_Ca75_biogem_SatuBen_setLim_moreda
+  nexp: _petm31_v0.1.2_deep_20230111_d18O._deepmip_MC100_pHcor_frac0.8_Ca75_biogem_SatuBen_setLim
+  nexp: _petm31_v0.1.2_deep_20230111_mgca._deepmip_MC100_pHcor_frac0.8_Ca75_biogem_SatuBen_setLim
+  nexp: _petm31_v0.1.2_deep_20230111_mgca._deepmip_MC100_NoLim
+  nexp: _petm31_v0.1.2_deep_20230111_d18O._deepmip_MC100_NoLim
+  #
   
   # project directory for input data
   
@@ -94,8 +120,9 @@ core:
   # work directory for saving outputs
   
   #wrkdir: /mnt/d/DeepDA/wrk    # for Windows subsystem for Linux
-  wrkdir: /volumes/DA/DeepDA/wrk    # for MacOS  DA disk
+  #wrkdir: /volumes/DA/DeepDA/wrk    # for MacOS  DA disk
   #wrkdir: /volumes/Backup/DeepDA    # for MacOS  Backup disk
+  wrkdir: /Users/mingsongli/Documents/posterior
   
   # directory for proxy data
   #proxy_dir: /mnt/c/Users/mul450/Dropbox/git/deepDA/mlwrk/proxy    # for Windows subsystem for Linux
@@ -105,6 +132,7 @@ core:
   #prior_dir: /mnt/d/cGENIE/ML.petm/ML.petm017    # for Windows subsystem for Linux
   prior_dir: /volumes/DA/cGENIE/ML.petm/ML.petm031    # for MacOS
   #prior_dir: /volumes/Backup/cgenie_output/ML.petm029    # for MacOS
+  prior_dir: /Users/mingsongli/Documents/prior/ML.petm031
   
 # ===============================
 
@@ -190,10 +218,10 @@ proxies:
   # proxy fraction used. for example, 0.98 means 98% of the total number of dataset are randomly assimilated
   
   #proxy_frac: !!python/tuple [0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0]
-  proxy_frac: !!python/tuple [0.98]
-  proxy_frac: !!python/tuple [0.95]
+  #proxy_frac: !!python/tuple [0.98]
+  #proxy_frac: !!python/tuple [0.95]
   #proxy_frac: !!python/tuple [1.0]
-  #proxy_frac: !!python/tuple [0.8]
+  proxy_frac: !!python/tuple [0.8]
   
   # ... feature not included ...
   proxy_timeseries_kind: asis
@@ -286,7 +314,7 @@ proxies:
     #  'Marine sediments_mgca_pooled_red']
     
     ## exclude CaCO3  = TOM
-    proxy_blacklist: ['Marine sediments_caco3']
+    #proxy_blacklist: ['Marine sediments_caco3']
     
     # d18O + Mg/Ca
     #proxy_blacklist: ['Marine sediments_caco3',
@@ -321,10 +349,10 @@ proxies:
     #  'Marine sediments_mgca_pooled_red']
     
     ## d18O only
-    #proxy_blacklist: ['Marine sediments_tex86',
-    #  'Marine sediments_caco3',
-    #  'Marine sediments_mgca_pooled_bcp',
-    #  'Marine sediments_mgca_pooled_red']
+    proxy_blacklist: ['Marine sediments_tex86',
+      'Marine sediments_caco3',
+      'Marine sediments_mgca_pooled_bcp',
+      'Marine sediments_mgca_pooled_red']
     
     ## Mg/Ca only
     #proxy_blacklist: ['Marine sediments_tex86',
@@ -371,14 +399,14 @@ proxies:
       Marine sediments_tex86: bayesreg_tex86                         # DeepMIP
       #Marine sediments_tex86: tex86h_forward                        # TEX86h model
       
-      Marine sediments_d18o_pooled: bayesreg_d18o_pooled             # Bayesian model
-      #Marine sediments_d18o_pooled: deepmip_d18o                    # DeepMIP
+      #Marine sediments_d18o_pooled: bayesreg_d18o_pooled             # Bayesian model
+      Marine sediments_d18o_pooled: deepmip_d18o                    # DeepMIP
       
-      Marine sediments_mgca_pooled_red: bayesreg_mgca_pooled_red     # Bayesian model
-      Marine sediments_mgca_pooled_bcp: bayesreg_mgca_pooled_bcp     # Bayesian model
+      #Marine sediments_mgca_pooled_red: bayesreg_mgca_pooled_red     # Bayesian model
+      #Marine sediments_mgca_pooled_bcp: bayesreg_mgca_pooled_bcp     # Bayesian model
       
-      #Marine sediments_mgca_pooled_red: deepmip_mgca                # DeepMIP
-      #Marine sediments_mgca_pooled_bcp: deepmip_mgca                # DeepMIP
+      Marine sediments_mgca_pooled_red: deepmip_mgca                # DeepMIP
+      Marine sediments_mgca_pooled_bcp: deepmip_mgca                # DeepMIP
       
       Marine sediments_caco3: cgenie_caco3                           # direct assimilation
       Marine sediments_caco3_13c: cgenie_caco3_13c                   # direct assimilation
@@ -472,7 +500,7 @@ psm:
     psm_required_variables:
       ocn_sur_temp: 'full'
     temptype: 'sst'
-    search_tol: 15   # search tolerance
+    search_tol: 10   # search tolerance
     nens: 5000       # number of ensemble for the Bayesian model
     # below is only useful for the verification
     search_tol_file: 'PETMTEX_baysparSettings_v0.2.csv'
@@ -596,27 +624,32 @@ prior:
     # longitude offset degree. default -180.0, works for cgenie model
     dum_lon_offset: -180.0
     # hard code for setting limitations of variable values
+    #limit_hard:
+    #    sed_CaCO3:
+    #      lim_min: 0.0
+    #      lim_max: 100.0
+    #    atm_pCO2:
+    #      lim_min: 0.0
+    #      lim_max: null
+    #    fburial_CaCO3:
+    #      lim_min: 0.0
+    #      lim_max: null
+    #    carb_sur_ohm_cal:
+    #      lim_min: 0.0
+    #      lim_max: null
+    #    carb_sur_ohm_arg:
+    #      lim_min: 0.0
+    #      lim_max: null
+    #    carb_ben_ohm_cal:
+    #      lim_min: 0.0
+    #      lim_max: null
+    #    carb_ben_ohm_arg:
+    #      lim_min: 0.0
+    #      lim_max: null
+          
     limit_hard:
         sed_CaCO3:
-          lim_min: 0.0
-          lim_max: 100.0
-        atm_pCO2:
-          lim_min: 0.0
-          lim_max: null
-        fburial_CaCO3:
-          lim_min: 0.0
-          lim_max: null
-        carb_sur_ohm_cal:
-          lim_min: 0.0
-          lim_max: null
-        carb_sur_ohm_arg:
-          lim_min: 0.0
-          lim_max: null
-        carb_ben_ohm_cal:
-          lim_min: 0.0
-          lim_max: null
-        carb_ben_ohm_arg:
-          lim_min: 0.0
+          lim_min: null
           lim_max: null
 
     # State variable to be analyzed
@@ -710,7 +743,13 @@ prior:
             'ocn_sur_ALK',
             'sed_CaCO3',
             'carb_ben_ohm_cal',
-            'carb_ben_ohm_arg'
+            'carb_ben_ohm_arg',
+            'ocn_sur_O2',
+            'ocn_ben_O2',
+            'misc_sur_rCaCO3toPOC',
+            'ocn_sur_PO4',
+            'ocn_ben_PO4',
+            'ocn_sur_DIC'
             ]
             
     # for Mg/Ca data evalution
