@@ -7,19 +7,25 @@
 .ipynb_checkpoints/
 
 # working folder
+
 mlwrk/archive
 mlwrk/mgcapsm
 mlwrk/wrk
 backup/
 src/
+
 #verification/
 
+verification/backup
 DeepDA_lib/.ipynb_checkpoints/
 DeepDA_lib/__pycache__/
 misc/.ipynb_checkpoints/
 
 # misc
+
 .DS_Store
 
+
 # test
+
 testmisc.ipynb
