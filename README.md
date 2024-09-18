@@ -1,12 +1,15 @@
 # DeepDA
 
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.1234567.svg)](https://doi.org/10.5281/zenodo.1234567)
+
+
 ---
-`DeepDA is a data assimilation framework for deep time paleoclimate project.`
+`DeepDA is a data assimilation framework for paleoclimate projects focusing on deep time.`
 
 
 ## Warning
 
-**This project is under heavy development.**
+**This project is under active development.**
 
 ---
 
@@ -18,28 +21,28 @@
 >  
 >  Email: msli {at} pku.edu.cn
 > 
->  April 7, 2022
+>  Sept 18, 2024
  
 ---
 
-## DA Frame Structure
+## Data Assimilation Framework Structure
 
 ### DeepDA_config.yml
 > Configuration parameters for running a data assimilation reconstruction using cGENIE priors.
 > 
-> It defines **almost** all parameters.
+> Defines **almost** all parameters.
 
 ### DeepDA_allMC.ipynb   
 > Jupyter notebook. 
 > 
 > Main function. 
 > 
-> Users have to adjust the code for their own projects.
+> Users must adjust the code for their own projects.
 
 ### DeepDA_lib/
 * **DeepDA_psm.py**
 	
-> Functions useful for the proxy system models
+> Functions useful for proxy system models
 
 * **DeepDA_tools.py**
 	
@@ -47,11 +50,11 @@
 	
 * **LMR_DA.py**
 
-> DA core code; borrowed from LMR project by G. J. Hakim with code borrowed from L. Madaus
+> DA core code borrowed from the LMR project by G. J. Hakim, with additional code by L. Madaus
 	
 * **modules_nc.py**   
 
-> Functions useful for the prior
+> Functions useful for working with the prior data
     
 ### misc/
 * **deepda_pyenv.yml**
@@ -71,7 +74,7 @@
 	
 * **oceanmask_p0055c_Atlantic.csv**
 
-	*grid definition for cGENIE*
+	*Grid mask definition for the Atlantic in cGENIE*
 	
 #### proxy/
 * **petmproxy3slices_v0.1.csv**
@@ -80,50 +83,50 @@
 	
 * **PETMTEX_baysparSettings_v0.2.csv**
 
-	*tolerance settings for BAYSPAR*
+	*Tolerance settings for BAYSPAR*
 
 #### wrk/
 
-*directory for saving outputs*
+* A directory for saving outputs*
     
 ### utils/
 
-*utilities for the analysis of the outputs*
+*utilities for analyzing the outputs*
 
 * CESMreadNC4R18O.ipynb    
 
-> 	Read d18Osw from netCDF file of CESM simulations
+> 	Reads d18Osw from CESM simulation netCDF files
 
 * correct_cgenie_biogem_2d.ipynb
 
-> 	Generate surface field for cGENIE `biogem_2d.nc` file
+> 	Generates surface fields for cGENIE biogem_2d.nc file
 
 * correct_cgenie_carb_ohm_cal.ipynb
 
-> 	Pick bottom water calcite saturation field '`carb_ohm_cal_ben`' using user-defined bathymetry.
+> 	Selects bottom water calcite saturation fields ('carb_ohm_cal_ben') using user-defined bathymetry
 > 
->   Update cGENIE output file of sedgem `fields_sedgem_2d.nc`
+>   Updates cGENIE output files for sedgem (fields_sedgem_2d.nc)
 
 * correct_cgenie_sed_caco3_13c.ipynb
 
-> 	Correct cGENIE field of `sed_CaCO3_13C`
+> 	Corrects the cGENIE sed_CaCO3_13C field
 	
 * ReadcGENIEresViaName.ipynb
 
-> 	Read cGENIE `.res` files via names
+> 	Reads cGENIE .res files by name
 	
 * ReadDASummaryXlsxPlot-prePETM_SST.ipynb
 
-> 	Read `wrk`/ folder for writing `*.summary.xlsx`; extract warming and cooling data for all variables
+> 	Reads the wrk folder and writes *.summary.xlsx; extracts warming and cooling data for all variables
 
 * ReadDASummaryXlsxPlot-SST.ipynb
 
-> 	Read `wrk`/ folder for writing `*.summary.xlsx`; extract warming and cooling data for all variables 
+> 	Same as above, but for different SST-related data
 
 
 * ReadDASummaryXlsxPlot.ipynb
 
-> 	Read `wrk`/ folder for writing `*.summary.xlsx`; extract warming and cooling data for all variables 
+> 	Reads the wrk folder and writes *.summary.xlsx; extracts warming and cooling data for all variables
 
 
     
@@ -131,27 +134,19 @@
 
 * DeepDA_verify_proxyunit-jobs.ipynb
 
-> 	DeepDA_verify is able to verify DA outputs.
+> 	Verifies DA outputs by reading proxy, prior, and posterior data from DA output files and config files.
 > 	
-> 	It reads proxy, prior, and posterior from DA output files and configuration files.
-> 	
-> 	Then, it calculates statistics (corrcoef and CE) of the DA results and saves outputs.
+> 	Calculates statistics (corrcoef and CE) and saves outputs.
 	
 * DeepDA_verify_proxyunit-testR.ipynb
 
-> 	DeepDA_verify is able to verify DA outputs.
-> 	
-> 	It reads proxy, prior, and posterior from DA output files and configuration files.
-> 	
-> 	Then, it calculates statistics (corrcoef and CE) of the DA results and saves outputs.
-                                          
-                                          
+> 	Similar functionality as above for verifying DA outputs.  
                                           
 ---
         
 ## Prior
 
-### Directory
+### Directory Structure
 
 	../../ML.petm/
 				ML.petm029.ID.1/    # folder, exp 1
@@ -160,7 +155,7 @@
 				...
 				ML.petm029.ID.n/    # folder, exp n
                  
-Each folder of experiment:
+Each experiment folder contains:
 
 	ML.petm029.ID.1/
 				archive/
@@ -171,96 +166,92 @@ Each folder of experiment:
 				rokgem/
 				sedgem/
 					
-See [cGENIE.muffin Earth system model](https://www.seao2.info/mycgenie.html) for the structure of cGENIE model.
+Refer to the [cGENIE.muffin Earth system model](https://www.seao2.info/mycgenie.html) for more details on the model structure.
 
 	
 ---
 ---
 
-# How to run deepDA?
+# How to Run DeepDA?
 
 ### 1. Create an environment:
 
 	conda create --name deepda
         
- Activate this environment, use
+ Activate the environment:
 
 	conda activate deepda
 
- To deactivate an active environment, use
+ To deactivate, use:
 
 	conda deactivate
 
-### 2. Clone the deepDA frame code
+### 2. Clone the DeepDA repository
 #### git clone
 
     git clone https://github.com/mingsongli/deepDA.git
 
-#### Change directory
+#### Navigate to the misc directory:
 
     cd misc
 
-### 3. Setup environement
+### 3. Setup environment
 
-#### Install packages using `deepda_pyenv.yml` environment file:
+#### Install packages using the `deepda_pyenv.yml` file:
 
     conda env update --file deepda_pyenv.yml
 
-#### Install PSMs: BAYSPAR, BAYFOX & BAYMAG
+#### 4. Install PSMs: BAYSPAR, BAYFOX & BAYMAG
 
-##### Clone
+##### Clone the repositories:
 
     cd ../..
     git clone https://github.com/mingsongli/bayfox.git
     git clone https://github.com/mingsongli/baysparpy.git
     git clone https://github.com/mingsongli/BAYMAG.git
 
-> I did some corrections/adjustments for the DA project. The original code may not work as expected.
+> Note: Some adjustments were made for the DA project, and the original code may not work as expected.
 
-##### Install
+##### To install:
 
-Go to each package, install the package from the local directory
-
-###### BAYSPAR
+###### For BAYSPAR:
 
     cd baysparpy
     python setup.py install
 
-###### BAYFOX
+###### For BAYFOX:
 
     cd ../bayfox
     python setup.py install
     
-###### BAYMAG
+###### For BAYMAG
     
     cd ../baymagpy
     python setup.py install
     
- Read more [python setup.py](https://stackoverflow.com/questions/19048732/python-setup-py-develop-vs-install)
+ Read more about [python setup.py](https://stackoverflow.com/questions/19048732/python-setup-py-develop-vs-install)
 
-### 4. DA configuration
+### 5. Data Assimilation Configuration
 
-Go to the `deepDA` folder
+Navigate to the `deepDA` folder:
 
     cd ../deepDA
 
-Run `jupyterlab`
+Run `jupyterlab`:
 
     jupyter lab
 
-Revise settings in the **`DeepDA_config.yml`** accordingly
+Revise settings in **`DeepDA_config.yml`** accordingly.
 
-Double click **`DeepDA_config.yml`** to revise the settings.
+Open **`DeepDA_allMC.ipynb`** to start the notebook.
 
-Double click **`DeepDA_allMC.ipynb`** to open the notebook.
+*Adjust the code as needed for your project.*
 
-*May need to adjust the code for their own project*
+### 6. Run the Reconstruction
 
-### 5. Reconstruction
+Click the triangle button to execute the notebook.
 
-Click the triangle to run the notebook.
-
-The DA output will be saved in the user-defined directory.
+The output will be saved in the user-defined directory.
 
 Good luck!
 
@@ -268,9 +259,9 @@ Good luck!
 
 ## Reminder
 
-### If the above steps do not work, you may want to:
+### If the above steps do not work:
 
-#### 1. ensure that all required python packages have been installed.
+#### 1. Ensure that all required Python packages are installed.
 
  See
  
@@ -278,19 +269,17 @@ Good luck!
  	
  	/misc/lmr_py3EnvCondaList.docx
 
-####  2. Revise settings in the `DeepDA_config.yml` accordingly
+####  2. Revise settings in `DeepDA_config.yml` to suit your project.
 
-May need to adjust the code for your own project.
+####  3. If the prior lacks necessary fields, rerun the simulation to update the prior.
 
-####  3. If the prior lacks required fields, rerun the simulation to update the prior. 
-
-The code entitled
+Use the
 
 	correct_xxx.ipynb
 	
-within the `utils/` folder may be helpful for some minor corrections.
+scripts in the `utils/` folder for minor corrections.
 
 
-## Useful resource
+## Useful Resource
 
-[LMR project](https://atmos.washington.edu/~hakim/lmr/docs/index.html)
+[LMR project Documentation](https://atmos.washington.edu/~hakim/lmr/docs/index.html)
